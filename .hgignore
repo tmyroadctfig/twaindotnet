@@ -1,0 +1,6 @@
+glob:TwainDotNet.suo
+glob:TestApp/bin/
+glob:TestApp/obj/
+glob:TwainDotNet/bin/
+glob:TwainDotNet/obj/
+glob:TwainDotNet/TwainDotNet.csproj.user
