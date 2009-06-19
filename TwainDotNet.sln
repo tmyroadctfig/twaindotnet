@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwainDotNet", "TwainDotNet\TwainDotNet.csproj", "{857B8891-2932-484D-A9A8-D38B47108CF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{378465E6-6577-41CE-AEA3-DA73541F93A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{857B8891-2932-484D-A9A8-D38B47108CF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{857B8891-2932-484D-A9A8-D38B47108CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{857B8891-2932-484D-A9A8-D38B47108CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{857B8891-2932-484D-A9A8-D38B47108CF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378465E6-6577-41CE-AEA3-DA73541F93A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378465E6-6577-41CE-AEA3-DA73541F93A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378465E6-6577-41CE-AEA3-DA73541F93A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378465E6-6577-41CE-AEA3-DA73541F93A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
