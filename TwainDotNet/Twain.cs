@@ -10,15 +10,14 @@ using System.Drawing;
 
 namespace TwainDotNet
 {
-    public class Twain : System.Windows.Forms.IMessageFilter
+    public class Twain
     {
-        private IntPtr _windowHandle;
         private Identity _applicationId;
         private Identity _defaultSourceId;
         private Event _eventMessage;
-        private bool _messageFilterActive;
+        private IWindowsMessageHook _messageHook;
 
-        public Twain(IntPtr windowHandle)
+        public Twain(IWindowsMessageHook messageHook)
         {
             _applicationId = new Identity();
             _applicationId.Id = IntPtr.Zero;
@@ -39,7 +38,10 @@ namespace TwainDotNet
 
             _eventMessage.EventPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(WindowsMessage)));
 
-            Initialise(windowHandle);
+            _messageHook = messageHook;
+            _messageHook.FilterMessageCallback = FilterMessage;
+
+            Initialise();
 
             Bitmaps = new List<Bitmap>();
             ScanningComplete += delegate {};
@@ -50,9 +52,11 @@ namespace TwainDotNet
             Marshal.FreeHGlobal(_eventMessage.EventPtr);
         }
 
-        private void Initialise(IntPtr windowHandle)
+        private void Initialise()
         {
             Close();
+
+            IntPtr windowHandle = _messageHook.WindowHandle;
 
             // Initialise the data source manager
             TwainResult result = Twain32Native.DsmParent(
@@ -74,12 +78,8 @@ namespace TwainDotNet
                     Message.GetDefault,
                     _defaultSourceId);
 
-                if (result == TwainResult.Success)
-                {
-                    _windowHandle = windowHandle;
-                }
-                else
-                {
+                if (result != TwainResult.Success)
+                {                    
                     // Failed to get default source information, close the data source manager
                     Close();
                     throw new TwainException("Error getting information about the default source: " + result);
@@ -98,6 +98,8 @@ namespace TwainDotNet
         {
             CloseSource();
 
+            IntPtr windowHandle = _messageHook.WindowHandle;
+
             if (_applicationId.Id != IntPtr.Zero)
             {
                 // Close down the data source manager
@@ -107,7 +109,7 @@ namespace TwainDotNet
                     DataGroup.Control,
                     DataArgumentType.Parent,
                     Message.CloseDSM,
-                    ref _windowHandle);
+                    ref windowHandle);
             }
 
             _applicationId.Id = IntPtr.Zero;
@@ -142,11 +144,7 @@ namespace TwainDotNet
 
         protected void EndingScan()
         {
-            if (_messageFilterActive)
-            {
-                System.Windows.Forms.Application.RemoveMessageFilter(this);
-                _messageFilterActive = false;
-            }
+            _messageHook.UseFilter = false;
         }
 
         protected IList<IntPtr> TransferPictures()
@@ -233,7 +231,7 @@ namespace TwainDotNet
 
             if (_applicationId.Id == IntPtr.Zero)
             {
-                Initialise(_windowHandle);
+                Initialise();
 
                 if (_applicationId.Id == IntPtr.Zero)
                 {
@@ -257,7 +255,7 @@ namespace TwainDotNet
             UserInterface ui = new UserInterface();
             ui.ShowUI = (short)(settings.ShowTwainUI ? 1 : 0);
             ui.ModalUI = 1;
-            ui.ParentHand = _windowHandle;
+            ui.ParentHand = _messageHook.WindowHandle;;
             result = Twain32Native.DsUserInterface(
                 _applicationId,
                 _defaultSourceId,
@@ -307,11 +305,7 @@ namespace TwainDotNet
         /// </summary>
         public void StartScanning(ScanSettings settings)
         {
-            if (!_messageFilterActive)
-            {
-                _messageFilterActive = true;
-                System.Windows.Forms.Application.AddMessageFilter(this);
-            }
+            _messageHook.UseFilter = true;
 
             try
             {
@@ -325,12 +319,15 @@ namespace TwainDotNet
             }
         }
 
-        public void Select()
+        /// <summary>
+        /// Shows a dialog prompting the use to select the source to scan from.
+        /// </summary>
+        public void SelectSource()
         {
             CloseSource();
             if (_applicationId.Id == IntPtr.Zero)
             {
-                Initialise(_windowHandle);
+                Initialise();
 
                 if (_applicationId.Id == IntPtr.Zero)
                 {
@@ -347,22 +344,21 @@ namespace TwainDotNet
                 _defaultSourceId);
         }
 
-        #region System.Windows.Forms.IMessageFilter
-
-        public bool PreFilterMessage(ref System.Windows.Forms.Message m)
+        private IntPtr FilterMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (_defaultSourceId.Id == IntPtr.Zero)
             {
-                return false;
+                handled = false;
+                return IntPtr.Zero;
             }
 
             int pos = User32Native.GetMessagePos();
 
             WindowsMessage message = new WindowsMessage();
-            message.hwnd = m.HWnd;
-            message.message = m.Msg;
-            message.wParam = m.WParam;
-            message.lParam = m.LParam;
+            message.hwnd = hwnd;
+            message.message = msg;
+            message.wParam = wParam;
+            message.lParam = lParam;
             message.time = User32Native.GetMessageTime();
             message.x = (short)pos;
             message.y = (short)(pos >> 16);
@@ -371,8 +367,8 @@ namespace TwainDotNet
             _eventMessage.Message = 0;
 
             TwainResult result = Twain32Native.DsEvent(
-                _applicationId, 
-                _defaultSourceId, 
+                _applicationId,
+                _defaultSourceId,
                 DataGroup.Control,
                 DataArgumentType.Event,
                 Message.ProcessEvent,
@@ -380,14 +376,15 @@ namespace TwainDotNet
 
             if (result == TwainResult.NotDSEvent)
             {
-                return false;
+                handled = false;
+                return IntPtr.Zero;
             }
 
             switch (_eventMessage.Message)
             {
                 case Message.XFerReady:
                     IList<IntPtr> imagePointers = TransferPictures();
-                    
+
                     foreach (IntPtr image in imagePointers)
                     {
                         Bitmaps.Add(new BitmapRenderer(image).RenderToBitmap());
@@ -413,9 +410,8 @@ namespace TwainDotNet
                     break;
             }
 
-            return true;
+            handled = true;
+            return IntPtr.Zero;
         }
-
-        #endregion
     }
 }

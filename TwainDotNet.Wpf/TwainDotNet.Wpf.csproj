@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{857B8891-2932-484D-A9A8-D38B47108CF0}</ProjectGuid>
+    <ProjectGuid>{E297D5D9-17DD-4FC3-9B7B-DF1A8B28FA5E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TwainDotNet</RootNamespace>
-    <AssemblyName>TwainDotNet</AssemblyName>
+    <RootNamespace>TwainDotNet.Wpf</RootNamespace>
+    <AssemblyName>TwainDotNet.Wpf</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>TwainDotNet.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,11 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -46,43 +49,19 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FeederEmptyException.cs" />
-    <Compile Include="IWindowsMessageHook.cs" />
-    <Compile Include="ScanSettings.cs" />
-    <Compile Include="TwainException.cs" />
-    <Compile Include="TwainNative\Command.cs" />
-    <Compile Include="TwainNative\Country.cs" />
-    <Compile Include="Win32\BitmapInfoHeader.cs" />
-    <Compile Include="Win32\BitmapRenderer.cs" />
-    <Compile Include="Win32\Gdi32Native.cs" />
-    <Compile Include="Win32\Kernel32Native.cs" />
-    <Compile Include="TwainNative\Language.cs" />
-    <Compile Include="TwainNative\Twain32Native.cs" />
-    <Compile Include="TwainNative\Identity.cs" />
-    <Compile Include="TwainNative\TwainConstants.cs" />
-    <Compile Include="TwainNative\TwainResult.cs" />
-    <Compile Include="TwainNative\TwainVersion.cs" />
-    <Compile Include="TwainNative\Capabilities.cs" />
-    <Compile Include="TwainNative\Capability.cs" />
-    <Compile Include="TwainNative\DataArgumentType.cs" />
-    <Compile Include="TwainNative\DataGroup.cs" />
-    <Compile Include="TwainNative\Event.cs" />
-    <Compile Include="TwainNative\ImageInfo.cs" />
-    <Compile Include="TwainNative\Message.cs" />
-    <Compile Include="TwainNative\ContainerType.cs" />
-    <Compile Include="TwainNative\PendingXfers.cs" />
-    <Compile Include="TwainNative\Status.cs" />
-    <Compile Include="TwainNative\TwainType.cs" />
-    <Compile Include="Win32\User32Native.cs" />
-    <Compile Include="TwainNative\UserInterface.cs" />
-    <Compile Include="Win32\WindowsMessage.cs" />
-    <Compile Include="Twain.cs" />
+    <Compile Include="WpfWindowMessageHook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TwainDotNet.snk" />
+    <ProjectReference Include="..\TwainDotNet\TwainDotNet.csproj">
+      <Project>{857B8891-2932-484D-A9A8-D38B47108CF0}</Project>
+      <Name>TwainDotNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

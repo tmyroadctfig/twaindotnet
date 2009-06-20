@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using TwainDotNet;
 using System.IO;
+using TwainDotNet.WinFroms;
 
 namespace TestApp
 {
@@ -20,7 +21,7 @@ namespace TestApp
         {
             InitializeComponent();
 
-            _twain = new Twain(Handle);
+            _twain = new Twain(new WinFormsWindowMessageHook(this));
             _twain.ScanningComplete += delegate
             {
                 Enabled = true;
@@ -34,7 +35,7 @@ namespace TestApp
 
         private void selectSource_Click(object sender, EventArgs e)
         {
-            _twain.Select();
+            _twain.SelectSource();
         }
 
         private void scan_Click(object sender, EventArgs e)
