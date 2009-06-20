@@ -4,3 +4,9 @@ glob:TestApp/obj/
 glob:TwainDotNet/bin/
 glob:TwainDotNet/obj/
 glob:TwainDotNet/TwainDotNet.csproj.user
+glob:TestAppWpf/bin/
+glob:TestAppWpf/obj/
+glob:TwainDotNet.WinFroms/bin/
+glob:TwainDotNet.WinFroms/obj/
+glob:TwainDotNet.Wpf/bin/
+glob:TwainDotNet.Wpf/obj/
