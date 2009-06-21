@@ -50,10 +50,12 @@
   <ItemGroup>
     <Compile Include="FeederEmptyException.cs" />
     <Compile Include="IWindowsMessageHook.cs" />
+    <Compile Include="ResolutionSettings.cs" />
     <Compile Include="ScanSettings.cs" />
     <Compile Include="TwainException.cs" />
     <Compile Include="TwainNative\Command.cs" />
     <Compile Include="TwainNative\Country.cs" />
+    <Compile Include="TwainNative\PixelType.cs" />
     <Compile Include="Win32\BitmapInfoHeader.cs" />
     <Compile Include="Win32\BitmapRenderer.cs" />
     <Compile Include="Win32\Gdi32Native.cs" />

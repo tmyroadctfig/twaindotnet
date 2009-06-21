@@ -82,12 +82,12 @@ namespace TwainDotNet
                 {                    
                     // Failed to get default source information, close the data source manager
                     Close();
-                    throw new TwainException("Error getting information about the default source: " + result);
+                    throw new TwainException("Error getting information about the default source: " + result, result);
                 }
             }
             else
             {
-                throw new TwainException("Error initialising DSM: " + result);
+                throw new TwainException("Error initialising DSM: " + result, result);
             }
         }
 
@@ -286,6 +286,24 @@ namespace TwainDotNet
 
                     Capability.SetCapability(Capabilities.FeedPage, true, _applicationId, _defaultSourceId);
                     Capability.SetCapability(Capabilities.AutoFeed, true, _applicationId, _defaultSourceId);
+                }
+
+                if (settings.Resolution != null)
+                {
+                    Capability.SetCapability(Capabilities.IPixelType, (short)settings.Resolution.GetPixelType(), _applicationId, _defaultSourceId);
+
+                    // TODO: Also set this for colour scanning
+                    if (settings.Resolution.ColourSetting != ColourSetting.Colour)
+                    {
+                        Capability.SetCapability(Capabilities.BitDepth, settings.Resolution.GetBitDepth(), _applicationId, _defaultSourceId);
+                    }
+
+                    if (settings.Resolution.Dpi.HasValue)
+                    {
+                        int dpi = settings.Resolution.Dpi.Value;
+                        Capability.SetCapability(Capabilities.XResolution, dpi, TwainType.Fix32, _applicationId, _defaultSourceId);
+                        Capability.SetCapability(Capabilities.YResolution, dpi, TwainType.Fix32, _applicationId, _defaultSourceId);
+                    }
                 }
             }
         }

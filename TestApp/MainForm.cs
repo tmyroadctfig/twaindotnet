@@ -29,6 +29,10 @@ namespace TestApp
                 if (_twain.Bitmaps.Count > 0)
                 {
                     pictureBox1.Image = _twain.Bitmaps[0];
+                    _twain.Bitmaps.Clear();
+
+                    widthLabel.Text = "Width: " + pictureBox1.Image.Width;
+                    heightLabel.Text = "Height: " + pictureBox1.Image.Height;
                 }
             };
         }
@@ -45,7 +49,10 @@ namespace TestApp
             _settings = new ScanSettings()
             {
                 UseDocumentFeeder = useAdfCheckBox.Checked,
-                ShowTwainUI = useUICheckBox.Checked
+                ShowTwainUI = useUICheckBox.Checked,
+                Resolution = blackAndWhiteCheckBox.Checked
+                    ? ResolutionSettings.Fax
+                    : ResolutionSettings.ColourPhotocopier
             };
 
             try

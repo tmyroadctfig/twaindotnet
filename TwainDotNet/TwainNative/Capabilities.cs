@@ -15,6 +15,9 @@ namespace TwainDotNet.TwainNative
         FeederEnabled = 0x1002,
         FeederLoaded = 0x1003,
         AutoFeed = 0x1007,
-        FeedPage = 0x1009
+        FeedPage = 0x1009, 
+        XResolution = 0x1118,
+        YResolution = 0x1119,
+        BitDepth = 0x112b
     }
 }

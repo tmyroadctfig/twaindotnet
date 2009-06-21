@@ -34,6 +34,9 @@
             this.useAdfCheckBox = new System.Windows.Forms.CheckBox();
             this.useUICheckBox = new System.Windows.Forms.CheckBox();
             this.saveButton = new System.Windows.Forms.Button();
+            this.blackAndWhiteCheckBox = new System.Windows.Forms.CheckBox();
+            this.widthLabel = new System.Windows.Forms.Label();
+            this.heightLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,7 +65,7 @@
             this.pictureBox1.BackColor = System.Drawing.Color.White;
             this.pictureBox1.Location = new System.Drawing.Point(93, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(460, 430);
+            this.pictureBox1.Size = new System.Drawing.Size(460, 601);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
@@ -89,7 +92,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(12, 171);
+            this.saveButton.Location = new System.Drawing.Point(12, 194);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 53);
             this.saveButton.TabIndex = 5;
@@ -97,11 +100,40 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
+            // blackAndWhiteCheckBox
+            // 
+            this.blackAndWhiteCheckBox.AutoSize = true;
+            this.blackAndWhiteCheckBox.Location = new System.Drawing.Point(12, 171);
+            this.blackAndWhiteCheckBox.Name = "blackAndWhiteCheckBox";
+            this.blackAndWhiteCheckBox.Size = new System.Drawing.Size(56, 17);
+            this.blackAndWhiteCheckBox.TabIndex = 6;
+            this.blackAndWhiteCheckBox.Text = "B && W";
+            this.blackAndWhiteCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // widthLabel
+            // 
+            this.widthLabel.AutoSize = true;
+            this.widthLabel.Location = new System.Drawing.Point(12, 254);
+            this.widthLabel.Name = "widthLabel";
+            this.widthLabel.Size = new System.Drawing.Size(0, 13);
+            this.widthLabel.TabIndex = 7;
+            // 
+            // heightLabel
+            // 
+            this.heightLabel.AutoSize = true;
+            this.heightLabel.Location = new System.Drawing.Point(12, 271);
+            this.heightLabel.Name = "heightLabel";
+            this.heightLabel.Size = new System.Drawing.Size(0, 13);
+            this.heightLabel.TabIndex = 8;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 454);
+            this.ClientSize = new System.Drawing.Size(572, 625);
+            this.Controls.Add(this.heightLabel);
+            this.Controls.Add(this.widthLabel);
+            this.Controls.Add(this.blackAndWhiteCheckBox);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.useUICheckBox);
             this.Controls.Add(this.useAdfCheckBox);
@@ -125,6 +157,9 @@
         private System.Windows.Forms.CheckBox useAdfCheckBox;
         private System.Windows.Forms.CheckBox useUICheckBox;
         private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.CheckBox blackAndWhiteCheckBox;
+        private System.Windows.Forms.Label widthLabel;
+        private System.Windows.Forms.Label heightLabel;
     }
 }
 

@@ -28,6 +28,11 @@ namespace TwainDotNet
         public short TransferCount { get; set; }
 
         /// <summary>
+        /// The resolution settings. Set null to use current defaults.
+        /// </summary>
+        public ResolutionSettings Resolution { get; set; }
+
+        /// <summary>
         /// The value to set to scan all available pages.
         /// </summary>
         public const short TransferAllPages = -1;

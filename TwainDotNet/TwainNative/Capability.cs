@@ -48,6 +48,12 @@ namespace TwainDotNet.TwainNative
             SetCapability(capabilities, value, TwainType.Int32, applicationId, sourceId);
         }
 
+        public static void SetCapability(Capabilities capabilities, ushort value,
+            Identity applicationId, Identity sourceId)
+        {
+            SetCapability(capabilities, value, TwainType.UInt16, applicationId, sourceId);
+        }
+
         public static void SetCapability(Capabilities capabilities, short value,
             Identity applicationId, Identity sourceId)
         {
@@ -75,7 +81,7 @@ namespace TwainDotNet.TwainNative
 
             if (result != TwainResult.Success)
             {
-                throw new TwainException("Failed to set capability.");
+                throw new TwainException("Failed to set capability.", result);
             }
         }
 
@@ -94,7 +100,7 @@ namespace TwainDotNet.TwainNative
 
             if (result != TwainResult.Success)
             {
-                throw new TwainException("Failed to get capability.");
+                throw new TwainException("Failed to get capability.", result);
             }
 
             return capability.GetValue();

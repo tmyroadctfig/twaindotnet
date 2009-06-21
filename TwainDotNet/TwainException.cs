@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using TwainDotNet.TwainNative;
 
 namespace TwainDotNet
 {
@@ -18,6 +19,12 @@ namespace TwainDotNet
         {
         }
 
+        public TwainException(string message, TwainResult returnCode)
+            : this(message, null)
+        {
+            ReturnCode = returnCode;
+        }
+
         protected TwainException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
@@ -27,5 +34,7 @@ namespace TwainDotNet
             : base(message, innerException)
         {
         }
+
+        public TwainResult? ReturnCode { get; private set; }
     }
 }
