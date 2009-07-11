@@ -4,12 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using TwainDotNet.Win32;
+using log4net;
 
 namespace TwainDotNet.TwainNative
 {
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public class Capability
     {
+        /// <summary>
+        /// The logger for this class.
+        /// </summary>
+        static ILog log = LogManager.GetLogger(typeof(Capability));
+
         public Capability(Capabilities capabilities, int value, TwainType type)
         {
             Capabilities = capabilities;
@@ -69,6 +75,9 @@ namespace TwainDotNet.TwainNative
         public static void SetCapability(Capabilities capabilities, int value, TwainType type,
             Identity applicationId, Identity sourceId)
         {
+            log.Debug(string.Format("Attempting to set capabilities:{0}, value:{1}, type:{1}",
+                capabilities, value, type));
+
             Capability capability = new Capability(capabilities, value, type);
 
             TwainResult result = Twain32Native.DsCapability(
@@ -81,8 +90,13 @@ namespace TwainDotNet.TwainNative
 
             if (result != TwainResult.Success)
             {
+                log.Error(string.Format("Failed to set capabilities:{0}, value:{1}, type:{1}, result:{2}",
+                    capabilities, value, type, result));
+
                 throw new TwainException("Failed to set capability.", result);
             }
+
+            log.Debug("Set capabilities successfully");
         }
 
         public static int GetCapability(Capabilities capabilities, TwainType type, Identity applicationId,
