@@ -66,7 +66,7 @@ namespace TwainDotNet.TwainNative
         public static extern TwainResult DsStatus([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] Status dsmstat);
 
         [DllImport("twain_32.dll", EntryPoint = "#1")]
-        public static extern TwainResult DsmStatus([In, Out] Identity origin, IntPtr zeroptr, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] Status dsmstat);
+        public static extern TwainResult DsmStatus([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] Status dsmstat);
 
         [DllImport("twain_32.dll", EntryPoint = "#1")]
         public static extern TwainResult DsCapability([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] Capability capa);

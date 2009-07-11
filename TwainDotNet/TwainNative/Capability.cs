@@ -90,10 +90,23 @@ namespace TwainDotNet.TwainNative
 
             if (result != TwainResult.Success)
             {
-                log.Error(string.Format("Failed to set capabilities:{0}, value:{1}, type:{1}, result:{2}",
+                log.Debug(string.Format("Failed to set capabilities:{0}, value:{1}, type:{1}, result:{2}",
                     capabilities, value, type, result));
 
-                throw new TwainException("Failed to set capability.", result);
+                Status status = new Status();
+
+                Twain32Native.DsmStatus(
+                    applicationId,
+                    sourceId,
+                    DataGroup.Control,
+                    DataArgumentType.Status,
+                    Message.Get,
+                    status);
+
+                log.Error(string.Format("Failed to set capabilites:{0} reason: {1}", 
+                    capabilities, status.ConditionCode));
+
+                throw new TwainException("Failed to set capability.", result, status.ConditionCode);
             }
 
             log.Debug("Set capabilities successfully");

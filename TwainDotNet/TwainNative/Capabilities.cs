@@ -16,6 +16,8 @@ namespace TwainDotNet.TwainNative
         FeederLoaded = 0x1003,
         AutoFeed = 0x1007,
         FeedPage = 0x1009, 
+        Duplex = 0x1012,
+        DuplexEnabled = 0x1013,
         XResolution = 0x1118,
         YResolution = 0x1119,
         BitDepth = 0x112b

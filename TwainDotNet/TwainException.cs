@@ -25,6 +25,13 @@ namespace TwainDotNet
             ReturnCode = returnCode;
         }
 
+        public TwainException(string message, TwainResult returnCode, ConditionCode conditionCode)
+            : this(message, null)
+        {
+            ReturnCode = returnCode;
+            ConditionCode = conditionCode;
+        }
+
         protected TwainException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
@@ -36,5 +43,7 @@ namespace TwainDotNet
         }
 
         public TwainResult? ReturnCode { get; private set; }
+
+        public ConditionCode? ConditionCode { get; private set; }
     }
 }

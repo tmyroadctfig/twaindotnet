@@ -58,6 +58,7 @@
     <Compile Include="ScanSettings.cs" />
     <Compile Include="TwainException.cs" />
     <Compile Include="TwainNative\Command.cs" />
+    <Compile Include="TwainNative\ConditionCode.cs" />
     <Compile Include="TwainNative\Country.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
     <Compile Include="Win32\BitmapInfoHeader.cs" />
