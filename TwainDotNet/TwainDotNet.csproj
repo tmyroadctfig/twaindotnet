@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSource.cs" />
+    <Compile Include="DataSourceManager.cs" />
+    <Compile Include="Diagnostics.cs" />
     <Compile Include="FeederEmptyException.cs" />
     <Compile Include="IWindowsMessageHook.cs" />
     <Compile Include="ResolutionSettings.cs" />

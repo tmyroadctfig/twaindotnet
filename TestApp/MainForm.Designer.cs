@@ -37,6 +37,7 @@
             this.blackAndWhiteCheckBox = new System.Windows.Forms.CheckBox();
             this.widthLabel = new System.Windows.Forms.Label();
             this.heightLabel = new System.Windows.Forms.Label();
+            this.diagnosticsButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -126,11 +127,22 @@
             this.heightLabel.Size = new System.Drawing.Size(0, 13);
             this.heightLabel.TabIndex = 8;
             // 
+            // diagnosticsButton
+            // 
+            this.diagnosticsButton.Location = new System.Drawing.Point(12, 254);
+            this.diagnosticsButton.Name = "diagnosticsButton";
+            this.diagnosticsButton.Size = new System.Drawing.Size(75, 40);
+            this.diagnosticsButton.TabIndex = 9;
+            this.diagnosticsButton.Text = "Diagnostics";
+            this.diagnosticsButton.UseVisualStyleBackColor = true;
+            this.diagnosticsButton.Click += new System.EventHandler(this.diagnostics_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(572, 625);
+            this.Controls.Add(this.diagnosticsButton);
             this.Controls.Add(this.heightLabel);
             this.Controls.Add(this.widthLabel);
             this.Controls.Add(this.blackAndWhiteCheckBox);
@@ -160,6 +172,7 @@
         private System.Windows.Forms.CheckBox blackAndWhiteCheckBox;
         private System.Windows.Forms.Label widthLabel;
         private System.Windows.Forms.Label heightLabel;
+        private System.Windows.Forms.Button diagnosticsButton;
     }
 }
 

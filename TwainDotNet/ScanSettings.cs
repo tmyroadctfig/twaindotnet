@@ -36,5 +36,13 @@ namespace TwainDotNet
         /// The value to set to scan all available pages.
         /// </summary>
         public const short TransferAllPages = -1;
+
+        /// <summary>
+        /// Default scan settings.
+        /// </summary>
+        public static readonly ScanSettings Default = new ScanSettings()
+        {
+            Resolution = ResolutionSettings.ColourPhotocopier
+        };
     }
 }

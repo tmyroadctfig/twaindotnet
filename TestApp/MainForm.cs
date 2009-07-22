@@ -78,5 +78,10 @@ namespace TestApp
                 }
             }
         }
+
+        private void diagnostics_Click(object sender, EventArgs e)
+        {
+            var diagnostics = new Diagnostics(new WinFormsWindowMessageHook(this));
+        }
     }
 }
