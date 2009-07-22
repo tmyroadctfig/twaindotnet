@@ -10,23 +10,25 @@ namespace TwainDotNet
     {
         public Diagnostics(IWindowsMessageHook messageHook)
         {
-            var dataSourceManager = new DataSourceManager(DataSourceManager.DefaultApplicationId, messageHook);
-            dataSourceManager.SelectSource();
-
-            var dataSource = dataSourceManager.DataSource;
-            dataSource.OpenSource();
-            
-            foreach (Capabilities capability in Enum.GetValues(typeof(Capabilities)))
+            using (var dataSourceManager = new DataSourceManager(DataSourceManager.DefaultApplicationId, messageHook))
             {
-                try
-                {
-                    var result = Capability.GetCapability(capability, TwainType.Bool, dataSourceManager.ApplicationId, dataSource.SourceId);
+                dataSourceManager.SelectSource();
 
-                    Console.WriteLine("{0}: {1}", capability, result);
-                }
-                catch (TwainException e)
+                var dataSource = dataSourceManager.DataSource;
+                dataSource.OpenSource();
+
+                foreach (Capabilities capability in Enum.GetValues(typeof(Capabilities)))
                 {
-                    Console.WriteLine("{0}: {1}", capability, e.Message);
+                    try
+                    {
+                        var result = Capability.GetCapability(capability, TwainType.Bool, dataSourceManager.ApplicationId, dataSource.SourceId);
+
+                        Console.WriteLine("{0}: {1}", capability, result);
+                    }
+                    catch (TwainException e)
+                    {
+                        Console.WriteLine("{0}: {1} {2} {3}", capability, e.Message, e.ReturnCode, e.ConditionCode);
+                    }
                 }
             }
         }

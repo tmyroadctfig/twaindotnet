@@ -137,7 +137,20 @@ namespace TwainDotNet.TwainNative
 
             if (result != TwainResult.Success)
             {
-                throw new TwainException("Failed to get capability.", result);
+                Status status = new Status();
+
+                Twain32Native.DsmStatus(
+                    applicationId,
+                    sourceId,
+                    DataGroup.Control,
+                    DataArgumentType.Status,
+                    Message.Get,
+                    status);
+
+                log.Error(string.Format("Failed to get capabilites:{0} reason: {1}",
+                    capabilities, status.ConditionCode));
+
+                throw new TwainException("Failed to get capability.", result, status.ConditionCode);
             }
 
             return capability.GetValue();
