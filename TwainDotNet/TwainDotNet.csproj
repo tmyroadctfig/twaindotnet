@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Capability.cs" />
+    <Compile Include="CapabilityResult.cs" />
     <Compile Include="DataSource.cs" />
     <Compile Include="DataSourceManager.cs" />
     <Compile Include="Diagnostics.cs" />
@@ -64,6 +66,9 @@
     <Compile Include="TwainNative\ConditionCode.cs" />
     <Compile Include="TwainNative\Country.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
+    <Compile Include="TwainNative\TransferMechanism.cs" />
+    <Compile Include="TwainNative\TwainCapability.cs" />
+    <Compile Include="TwainNative\Units.cs" />
     <Compile Include="Win32\BitmapInfoHeader.cs" />
     <Compile Include="Win32\BitmapRenderer.cs" />
     <Compile Include="Win32\Gdi32Native.cs" />
@@ -75,7 +80,6 @@
     <Compile Include="TwainNative\TwainResult.cs" />
     <Compile Include="TwainNative\TwainVersion.cs" />
     <Compile Include="TwainNative\Capabilities.cs" />
-    <Compile Include="TwainNative\Capability.cs" />
     <Compile Include="TwainNative\DataArgumentType.cs" />
     <Compile Include="TwainNative\DataGroup.cs" />
     <Compile Include="TwainNative\Event.cs" />

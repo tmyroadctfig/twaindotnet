@@ -18,40 +18,6 @@ namespace TwainDotNet
         /// </summary>
         public ColourSetting ColourSetting { get; set; }
 
-        public PixelType GetPixelType()
-        {
-            switch (ColourSetting)
-            {
-                case ColourSetting.BlackAndWhite:
-                    return PixelType.BlackAndWhite;
-
-                case ColourSetting.GreyScale:
-                    return PixelType.Grey;
-
-                case ColourSetting.Colour:
-                    return PixelType.Rgb;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public ushort GetBitDepth()
-        {
-            switch (ColourSetting)
-            {
-                case ColourSetting.BlackAndWhite:
-                    return 1;
-
-                case ColourSetting.GreyScale:
-                    return 8;
-
-                case ColourSetting.Colour:
-                    return 16;
-            }
-
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Fax quality resolution.
         /// </summary>

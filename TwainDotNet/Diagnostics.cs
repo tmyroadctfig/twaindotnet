@@ -21,7 +21,7 @@ namespace TwainDotNet
                 {
                     try
                     {
-                        var result = Capability.GetCapability(capability, TwainType.Bool, dataSourceManager.ApplicationId, dataSource.SourceId);
+                        var result = Capability.GetBoolCapability(capability, dataSourceManager.ApplicationId, dataSource.SourceId);
 
                         Console.WriteLine("{0}: {1}", capability, result);
                     }

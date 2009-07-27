@@ -25,44 +25,100 @@ namespace TwainDotNet
 
         public Identity SourceId { get; private set; }
 
+        public void NegotiateTransferCount(ScanSettings scanSettings)
+        {
+            scanSettings.TransferCount = Capability.SetCapability(
+                Capabilities.XferCount,
+                scanSettings.TransferCount,
+                _applicationId,
+                SourceId);
+        }
+
+        public void NegotiateFeeder(ScanSettings scanSettings)
+        {
+            if (scanSettings.UseDocumentFeeder)
+            {
+                // Enable the document feeder
+                Capability.SetCapability(Capabilities.FeederEnabled, true, _applicationId, SourceId);
+
+                if (!Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId))
+                {
+                    throw new FeederEmptyException();
+                }
+
+                Capability.SetCapability(Capabilities.FeedPage, true, _applicationId, SourceId);
+                Capability.SetCapability(Capabilities.AutoFeed, true, _applicationId, SourceId);
+            }
+        }
+
+        public PixelType GetPixelType(ScanSettings scanSettings)
+        {
+            switch (scanSettings.Resolution.ColourSetting)
+            {
+                case ColourSetting.BlackAndWhite:
+                    return PixelType.BlackAndWhite;
+
+                case ColourSetting.GreyScale:
+                    return PixelType.Grey;
+
+                case ColourSetting.Colour:
+                    return PixelType.Rgb;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public short GetBitDepth(ScanSettings scanSettings)
+        {
+            switch (scanSettings.Resolution.ColourSetting)
+            {
+                case ColourSetting.BlackAndWhite:
+                    return 1;
+
+                case ColourSetting.GreyScale:
+                    return 8;
+
+                case ColourSetting.Colour:
+                    return 16;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public void NegotiateColour(ScanSettings scanSettings)
+        {
+            Capability.SetCapability(Capabilities.IPixelType, (short)GetPixelType(scanSettings), _applicationId, SourceId);
+
+            // TODO: Also set this for colour scanning
+            if (scanSettings.Resolution.ColourSetting != ColourSetting.Colour)
+            {
+                Capability.SetCapability(Capabilities.BitDepth, GetBitDepth(scanSettings), _applicationId, SourceId);
+            }
+        }
+
+        public void NegotiateResolution(ScanSettings scanSettings)
+        {
+            if (scanSettings.Resolution.Dpi.HasValue)
+            {
+                int dpi = scanSettings.Resolution.Dpi.Value;
+                Capability.SetBasicCapability(Capabilities.XResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
+                Capability.SetBasicCapability(Capabilities.YResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
+            }
+        }
+
         public void Open(ScanSettings settings)
         {
             OpenSource();
 
             if (!settings.ShowTwainUI)
             {
-                Capability.SetCapability(Capabilities.XferCount, settings.TransferCount, _applicationId, SourceId);
-
-                if (settings.UseDocumentFeeder)
-                {
-                    // Enable the document feeder
-                    Capability.SetCapability(Capabilities.FeederEnabled, true, _applicationId, SourceId);
-
-                    if (!Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId))
-                    {
-                        throw new FeederEmptyException();
-                    }
-
-                    Capability.SetCapability(Capabilities.FeedPage, true, _applicationId, SourceId);
-                    Capability.SetCapability(Capabilities.AutoFeed, true, _applicationId, SourceId);
-                }
+                NegotiateTransferCount(settings);
+                NegotiateFeeder(settings);                
 
                 if (settings.Resolution != null)
                 {
-                    Capability.SetCapability(Capabilities.IPixelType, (short)settings.Resolution.GetPixelType(), _applicationId, SourceId);
-
-                    // TODO: Also set this for colour scanning
-                    if (settings.Resolution.ColourSetting != ColourSetting.Colour)
-                    {
-                        Capability.SetCapability(Capabilities.BitDepth, settings.Resolution.GetBitDepth(), _applicationId, SourceId);
-                    }
-
-                    if (settings.Resolution.Dpi.HasValue)
-                    {
-                        int dpi = settings.Resolution.Dpi.Value;
-                        Capability.SetCapability(Capabilities.XResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
-                        Capability.SetCapability(Capabilities.YResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
-                    }
+                    NegotiateColour(settings);
+                    NegotiateResolution(settings);
                 }
             }
 
