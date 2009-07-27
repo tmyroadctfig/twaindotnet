@@ -9,14 +9,14 @@ using log4net;
 namespace TwainDotNet.TwainNative
 {
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
-    public class TwainCapability
+    public class CapabilityOneValue
     {
         /// <summary>
         /// The logger for this class.
         /// </summary>
-        static ILog log = LogManager.GetLogger(typeof(TwainCapability));
+        static ILog log = LogManager.GetLogger(typeof(CapabilityOneValue));
 
-        public TwainCapability(Capabilities capabilities, int value, TwainType type)
+        public CapabilityOneValue(Capabilities capabilities, int value, TwainType type)
         {
             Capabilities = capabilities;
             ContainerType = ContainerType.One;
@@ -28,7 +28,7 @@ namespace TwainDotNet.TwainNative
             Kernel32Native.GlobalUnlock(Handle);
         }
 
-        ~TwainCapability()
+        ~CapabilityOneValue()
         {
             if (Handle != IntPtr.Zero)
             {

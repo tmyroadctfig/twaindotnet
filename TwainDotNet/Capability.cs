@@ -29,7 +29,7 @@ namespace TwainDotNet
 
         public BasicCapabilityResult GetBasicValue()
         {
-            var twainCapability = new TwainCapability(_capability, 0, _twainType);
+            var twainCapability = new CapabilityOneValue(_capability, 0, _twainType);
 
             var result = Twain32Native.DsCapability(
                     _applicationId,
@@ -86,7 +86,7 @@ namespace TwainDotNet
 
             int rawValue = Convert.ToInt32(value);
 
-            TwainCapability capability = new TwainCapability(_capability, rawValue, _twainType);
+            CapabilityOneValue capability = new CapabilityOneValue(_capability, rawValue, _twainType);
 
             TwainResult result = Twain32Native.DsCapability(
                     _applicationId,
