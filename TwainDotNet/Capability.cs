@@ -29,7 +29,8 @@ namespace TwainDotNet
 
         public BasicCapabilityResult GetBasicValue()
         {
-            var twainCapability = new CapabilityOneValue(_capability, 0, _twainType);
+            var oneValue = new CapabilityOneValue(_twainType, 0);
+            var twainCapability = TwainCapability.From(_capability, oneValue);
 
             var result = Twain32Native.DsCapability(
                     _applicationId,
@@ -55,7 +56,7 @@ namespace TwainDotNet
 
             return new BasicCapabilityResult()
             {
-                RawBasicValue = twainCapability.GetValue()
+                RawBasicValue = oneValue.Value
             };
         }
 
@@ -85,8 +86,8 @@ namespace TwainDotNet
                 _capability, value, _twainType));
 
             int rawValue = Convert.ToInt32(value);
-
-            CapabilityOneValue capability = new CapabilityOneValue(_capability, rawValue, _twainType);
+            var oneValue = new CapabilityOneValue(_twainType, rawValue);
+            var twainCapability = TwainCapability.From(_capability, oneValue);
 
             TwainResult result = Twain32Native.DsCapability(
                     _applicationId,
@@ -94,7 +95,7 @@ namespace TwainDotNet
                     DataGroup.Control,
                     DataArgumentType.Capability,
                     Message.Set,
-                    capability);
+                    twainCapability);
 
             if (result != TwainResult.Success)
             {

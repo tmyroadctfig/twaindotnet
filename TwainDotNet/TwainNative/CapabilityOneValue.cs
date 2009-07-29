@@ -8,44 +8,23 @@ using log4net;
 
 namespace TwainDotNet.TwainNative
 {
+    /// <summary>
+    /// /* TWON_ONEVALUE. Container for one value. */
+    /// typedef struct {
+    ///    TW_UINT16  ItemType;
+    ///    TW_UINT32  Item;
+    /// } TW_ONEVALUE, FAR * pTW_ONEVALUE;
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public class CapabilityOneValue
     {
-        /// <summary>
-        /// The logger for this class.
-        /// </summary>
-        static ILog log = LogManager.GetLogger(typeof(CapabilityOneValue));
-
-        public CapabilityOneValue(Capabilities capabilities, int value, TwainType type)
+        public CapabilityOneValue(TwainType twainType, int value)
         {
-            Capabilities = capabilities;
-            ContainerType = ContainerType.One;
-
-            Handle = Kernel32Native.GlobalAlloc(GlobalAllocFlags.Handle, 6);
-            IntPtr pv = Kernel32Native.GlobalLock(Handle);
-            Marshal.WriteInt16(pv, 0, (short)type);
-            Marshal.WriteInt32(pv, 2, value);
-            Kernel32Native.GlobalUnlock(Handle);
+            Value = value;
+            TwainType = twainType;
         }
 
-        ~CapabilityOneValue()
-        {
-            if (Handle != IntPtr.Zero)
-            {
-                Kernel32Native.GlobalFree(Handle);
-            }
-        }
-
-        public Capabilities Capabilities;
-        public ContainerType ContainerType;
-        public IntPtr Handle;
-
-        public int GetValue()
-        {            
-            IntPtr pv = Kernel32Native.GlobalLock(Handle);
-            int value = Marshal.ReadInt32(pv, 2);
-            Kernel32Native.GlobalUnlock(Handle);
-            return value;
-        }
+        public TwainType TwainType { get; set; }
+        public int Value { get; set; }
     }
 }

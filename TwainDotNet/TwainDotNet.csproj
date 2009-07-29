@@ -62,12 +62,17 @@
     <Compile Include="ResolutionSettings.cs" />
     <Compile Include="ScanSettings.cs" />
     <Compile Include="TwainException.cs" />
+    <Compile Include="TwainNative\CapabilityArrayValue.cs" />
+    <Compile Include="TwainNative\CapabilityEnumValue.cs" />
     <Compile Include="TwainNative\CapabilityOneValue.cs" />
     <Compile Include="TwainNative\Command.cs" />
     <Compile Include="TwainNative\ConditionCode.cs" />
     <Compile Include="TwainNative\Country.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
     <Compile Include="TwainNative\TransferMechanism.cs" />
+    <Compile Include="TwainNative\TwainCapability.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TwainNative\Units.cs" />
     <Compile Include="Win32\BitmapInfoHeader.cs" />
     <Compile Include="Win32\BitmapRenderer.cs" />
