@@ -5,11 +5,17 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Diagnostics;
+using log4net;
 
 namespace TwainDotNet.Win32
 {
     public class BitmapRenderer
     {
+        /// <summary>
+        /// The logger for this class.
+        /// </summary>
+        static ILog log = LogManager.GetLogger(typeof(BitmapRenderer));
+
         IntPtr _bitmapPointer;
         IntPtr _pixelInfoPointer;
         Rectangle _rectangle;
@@ -20,6 +26,7 @@ namespace TwainDotNet.Win32
 
             BitmapInfoHeader bitmapInfo = new BitmapInfoHeader();
             Marshal.PtrToStructure(_bitmapPointer, bitmapInfo);
+            log.Debug(bitmapInfo.ToString());
 
             _rectangle = new Rectangle();
             _rectangle.X = _rectangle.Y = 0;

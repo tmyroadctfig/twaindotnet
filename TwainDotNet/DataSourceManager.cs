@@ -7,11 +7,17 @@ using System.Runtime.InteropServices;
 using TwainDotNet.Win32;
 using System.Reflection;
 using System.Drawing;
+using log4net;
 
 namespace TwainDotNet
 {
     public class DataSourceManager : IDisposable
     {
+        /// <summary>
+        /// The logger for this class.
+        /// </summary>
+        static ILog log = LogManager.GetLogger(typeof(DataSourceManager));
+
         IWindowsMessageHook _messageHook;
         Event _eventMessage;
 
@@ -230,7 +236,14 @@ namespace TwainDotNet
                     break;
                 }
 
-                picturePointers.Add(hbitmap);
+                if (hbitmap == IntPtr.Zero)
+                {
+                    log.Warn("Transfer complete but bitmap pointer is still null.");
+                }
+                else
+                {
+                    picturePointers.Add(hbitmap);
+                }
             }
             while (pendingTransfer.Count != 0);
 

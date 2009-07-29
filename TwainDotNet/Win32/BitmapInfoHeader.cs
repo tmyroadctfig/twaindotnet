@@ -22,5 +22,22 @@ namespace TwainDotNet.Win32
         public int YPelsPerMeter;
         public int ClrUsed;
         public int ClrImportant;
+
+        public override string ToString()
+        {
+            return string.Format(
+                "s:{0} w:{1} h:{2} p:{3} bc:{4} c:{5} si:{6} xpels:{7} ypels:{8} cu:{9} ci:{10}",
+                Size,
+                Width,
+                Height,
+                Planes,
+                BitCount,
+                Compression,
+                SizeImage,
+                XPelsPerMeter,
+                YPelsPerMeter,
+                ClrUsed,
+                ClrImportant);
+        }
     }
 }
