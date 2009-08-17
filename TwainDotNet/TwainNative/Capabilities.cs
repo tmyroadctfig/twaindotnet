@@ -18,7 +18,7 @@ namespace TwainDotNet.TwainNative
         FeederEnabled = 0x1002,
         FeederLoaded = 0x1003,
         Timedate = 0x1004,
-        Supportedcaps = 0x1005,
+        SupportedCapabilities = 0x1005,
         Extendedcaps = 0x1006,
         AutoFeed = 0x1007,
         ClearPage = 0x1008,
