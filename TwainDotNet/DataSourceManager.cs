@@ -286,7 +286,7 @@ namespace TwainDotNet
 
         public static readonly Identity DefaultApplicationId = new Identity()
         {
-            Id = IntPtr.Zero,
+            Id = BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0),
             Version = new TwainVersion()
             {
                 MajorNum = 1,
