@@ -15,5 +15,9 @@ namespace TwainDotNet.TwainNative
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 34)]
         public string Info;
+
+        public TwainVersion Clone() {
+            return (TwainVersion)MemberwiseClone();
+        }
     }
 }

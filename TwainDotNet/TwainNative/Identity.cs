@@ -8,7 +8,7 @@ namespace TwainDotNet.TwainNative
     [StructLayout(LayoutKind.Sequential, Pack = 2, CharSet = CharSet.Ansi)]
     public class Identity
     {
-        public IntPtr Id;
+        public int Id;
         public TwainVersion Version;
         public short ProtocolMajor;
         public short ProtocolMinor;
@@ -22,5 +22,11 @@ namespace TwainDotNet.TwainNative
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 34)]
         public string ProductName;
+
+        public Identity Clone() {
+            var id = (Identity)MemberwiseClone();
+            id.Version = Version.Clone();
+            return id;
+        }
     }
 }

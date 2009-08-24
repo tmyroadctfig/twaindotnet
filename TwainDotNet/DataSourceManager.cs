@@ -26,24 +26,7 @@ namespace TwainDotNet
         public DataSourceManager(Identity applicationId, IWindowsMessageHook messageHook)
         {
             // Make a copy of the identity in case it gets modified
-            ApplicationId = new Identity()
-            {
-                Id = applicationId.Id,
-                Manufacturer = applicationId.Manufacturer,
-                ProductFamily = applicationId.ProductFamily,
-                ProductName = applicationId.ProductName,
-                ProtocolMajor = applicationId.ProtocolMajor,
-                ProtocolMinor = applicationId.ProtocolMinor,
-                SupportedGroups = applicationId.SupportedGroups,
-                Version = new TwainVersion()
-                {
-                    Country = applicationId.Version.Country,
-                    Info = applicationId.Version.Info,
-                    Language = applicationId.Version.Language,
-                    MajorNum = applicationId.Version.MajorNum,
-                    MinorNum = applicationId.Version.MinorNum
-                }
-            };
+            ApplicationId = applicationId.Clone();
 
             ScanningComplete += delegate { };
             Bitmaps = new List<Bitmap>();
