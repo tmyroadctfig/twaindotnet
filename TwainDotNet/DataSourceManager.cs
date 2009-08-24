@@ -29,7 +29,7 @@ namespace TwainDotNet
             ApplicationId = applicationId.Clone();
 
             ScanningComplete += delegate { };
-            Bitmaps = new List<Bitmap>();
+            Images = new List<Image>();
 
             _messageHook = messageHook;
             _messageHook.FilterMessageCallback = FilterMessage;
@@ -70,9 +70,29 @@ namespace TwainDotNet
         public event EventHandler ScanningComplete;
 
         /// <summary>
-        /// The scanned in bitmaps.
+        /// The scanned in bitmaps. Throws an error if an image is not a bitmap.
         /// </summary>
-        public IList<Bitmap> Bitmaps { get; private set; }
+        [Obsolete("Use the Images property instead.")]
+        //this is obsolete because TWAIN supports direct transfer of compressed images,
+        //which aren't necessarily Bitmaps
+		//this breaks compatibity if the client code is calling Bitmaps.Clear()
+		//to clear the image buffer. Not sure what to do about that.
+        public IList<Bitmap> Bitmaps {
+            get {
+                var l = new List<Bitmap>();
+                foreach (Bitmap b in Images)
+                    l.Add(b);
+                return l;
+            }
+            set {
+                Images = (IList<Image>)value;
+            }
+        }
+
+        /// <summary>
+        /// The scanned in images.
+        /// </summary>
+        public IList<Image> Images { get; private set; }
 
         public void StartScan(ScanSettings settings)
         {
@@ -132,7 +152,7 @@ namespace TwainDotNet
 
                     foreach (IntPtr image in imagePointers)
                     {
-                        Bitmaps.Add(new BitmapRenderer(image).RenderToBitmap());
+                        Images.Add(new BitmapRenderer(image).RenderToBitmap());
                     }
 
                     EndingScan();
