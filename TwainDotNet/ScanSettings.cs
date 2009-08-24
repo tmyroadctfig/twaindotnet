@@ -37,6 +37,11 @@ namespace TwainDotNet
         public const short TransferAllPages = -1;
 
         /// <summary>
+        /// Whether to use duplexing, if supported.
+        /// </summary>
+        public bool UseDuplex { get; set; }
+
+        /// <summary>
         /// Default scan settings.
         /// </summary>
         public static readonly ScanSettings Default = new ScanSettings()

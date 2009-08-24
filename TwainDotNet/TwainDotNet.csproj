@@ -58,6 +58,7 @@
     <Compile Include="TwainNative\CapabilityArrayValue.cs" />
     <Compile Include="TwainNative\CapabilityEnumValue.cs" />
     <Compile Include="TwainNative\CapabilityOneValue.cs" />
+    <Compile Include="TwainNative\Duplex.cs" />
     <Compile Include="TwainNative\Command.cs" />
     <Compile Include="TwainNative\ConditionCode.cs" />
     <Compile Include="TwainNative\Country.cs" />

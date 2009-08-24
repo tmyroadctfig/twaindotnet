@@ -111,14 +111,29 @@ namespace TwainDotNet
             }
         }
 
-        public void Open(ScanSettings settings)
+        public bool NegotiateDuplex(ScanSettings scanSettings)
+        {
+            if (scanSettings.UseDuplex)
+            {
+                var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
+                if ((Duplex)cap.GetBasicValue().Int16Value == Duplex.None)
+                {
+                    Capability.SetCapability(Capabilities.DuplexEnabled, 1, _applicationId, SourceId);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Open(ScanSettings settings)
         {
             OpenSource();
 
             if (!settings.ShowTwainUI)
             {
                 NegotiateTransferCount(settings);
-                NegotiateFeeder(settings);                
+                NegotiateFeeder(settings);
+                NegotiateDuplex(settings);
 
                 if (settings.Resolution != null)
                 {
@@ -127,7 +142,7 @@ namespace TwainDotNet
                 }
             }
 
-            Enable(settings);
+            return Enable(settings);
         }
 
         public void OpenSource()
@@ -146,7 +161,7 @@ namespace TwainDotNet
             }
         }
 
-        public void Enable(ScanSettings settings)
+        public bool Enable(ScanSettings settings)
         {
             UserInterface ui = new UserInterface();
             ui.ShowUI = (short)(settings.ShowTwainUI ? 1 : 0);
@@ -164,8 +179,9 @@ namespace TwainDotNet
             if (result != TwainResult.Success)
             {
                 Dispose();
-                return;
+                return false;
             }
+            return true;
         }
 
         public static DataSource GetDefault(Identity applicationId, IWindowsMessageHook messageHook)
