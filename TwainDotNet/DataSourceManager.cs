@@ -48,6 +48,9 @@ namespace TwainDotNet
 
             if (result == TwainResult.Success)
             {
+                //according to the 2.0 spec (2-10) if (applicationId.SupportedGroups
+                // | DataGroup.Dsm2) > 0 then we should call DM_Entry(id, 0, DG_Control, DAT_Entrypoint, MSG_Get, wh)
+                //right here
                 DataSource = DataSource.GetDefault(ApplicationId, _messageHook);
             }
             else
