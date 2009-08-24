@@ -84,6 +84,12 @@ namespace TwainDotNet
             throw new NotImplementedException();
         }
 
+        public bool PaperDetectable {
+            get {
+                return Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId);
+            }
+        }
+
         public void NegotiateColour(ScanSettings scanSettings)
         {
             Capability.SetCapability(Capabilities.IPixelType, (short)GetPixelType(scanSettings), _applicationId, SourceId);
