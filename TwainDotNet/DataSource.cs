@@ -13,7 +13,7 @@ namespace TwainDotNet
         public DataSource(Identity applicationId, Identity sourceId, IWindowsMessageHook messageHook)
         {
             _applicationId = applicationId;
-            SourceId = sourceId;
+            SourceId = sourceId.Clone();
             _messageHook = messageHook;
         }
 
@@ -199,6 +199,44 @@ namespace TwainDotNet
 
             return new DataSource(applicationId, defaultSourceId, messageHook);
         }
+
+        public static List<DataSource> GetAllSources(Identity appID, IWindowsMessageHook winHook)
+        {
+            var s = new List<DataSource>();
+            Identity id = new Identity();
+            var res = Twain32Native.DsmIdentity(appID, IntPtr.Zero, DataGroup.Control, DataArgumentType.Identity, Message.GetFirst, id);
+
+            if (res == TwainResult.EndOfList)
+                return s;
+            else if (res != TwainResult.Success) {
+                throw new TwainException("MSG_GETFIRST call failed.", res);
+            }
+            else
+                s.Add(new DataSource(appID, id, winHook));
+
+            do
+            {
+                res = Twain32Native.DsmIdentity(appID, IntPtr.Zero, DataGroup.Control, DataArgumentType.Identity, Message.GetNext, id);
+                if (res == TwainResult.EndOfList) break;
+                if (res != TwainResult.Success)
+                    throw new TwainException("MSG_GETNEXT call failed.", res);
+                s.Add(new DataSource(appID, id, winHook));
+            } while (true);
+
+            return s;
+        }
+
+        public static DataSource GetSource(string sourceProductName, Identity appID, IWindowsMessageHook winHook)
+        {
+            //a little slower than it could be, if enumerating unnecessary sources is slow. But less code duplication.
+            foreach (var source in GetAllSources(appID, winHook))
+            {
+                if (sourceProductName == source.SourceId.ProductName)
+                    return source;
+            }
+            return null;
+        }
+
 
         public void Dispose()
         {
