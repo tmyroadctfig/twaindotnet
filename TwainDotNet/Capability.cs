@@ -53,6 +53,8 @@ namespace TwainDotNet
                 };
             }
 
+            twainCapability.ReadBackValue();
+
             return new BasicCapabilityResult()
             {
                 RawBasicValue = oneValue.Value
@@ -174,7 +176,7 @@ namespace TwainDotNet
         public static void SetCapability(Capabilities capability, bool value, Identity applicationId,
             Identity sourceId)
         {
-            var c = new Capability(capability, TwainType.Int16, applicationId, sourceId);
+            var c = new Capability(capability, TwainType.Bool, applicationId, sourceId);
             var capResult = c.GetBasicValue();
 
             // Check that the device supports the capability

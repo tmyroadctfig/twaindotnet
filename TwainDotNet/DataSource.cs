@@ -45,7 +45,6 @@ namespace TwainDotNet
                     throw new FeederEmptyException();
                 }
 
-                Capability.SetCapability(Capabilities.FeedPage, true, _applicationId, SourceId);
                 Capability.SetCapability(Capabilities.AutoFeed, true, _applicationId, SourceId);
             }
         }

@@ -20,19 +20,13 @@ namespace TwainDotNet.TwainNative
         Capabilities _capabilities;
         ContainerType _containerType;
         IntPtr _handle;
-
-        public TwainCapability(Capabilities capabilities, ContainerType containerType, int size)
-        {
-            _capabilities = capabilities;
-            _containerType = containerType;
-
-            _handle = Kernel32Native.GlobalAlloc(GlobalAllocFlags.Handle, size);
-        }
+        object _value;
 
         protected TwainCapability(Capabilities capabilities, ContainerType containerType, object value)
         {
             _capabilities = capabilities;
             _containerType = containerType;
+            _value = value;
 
             _handle = Kernel32Native.GlobalAlloc(GlobalAllocFlags.Handle, Marshal.SizeOf(value));
 
@@ -51,6 +45,20 @@ namespace TwainDotNet.TwainNative
         ~TwainCapability()
         {
             Dispose(false);
+        }
+
+        public void ReadBackValue()
+        {
+            IntPtr p = Kernel32Native.GlobalLock(_handle);
+
+            try
+            {
+                Marshal.PtrToStructure(p, _value);
+            }
+            finally
+            {
+                Kernel32Native.GlobalUnlock(_handle);
+            }
         }
 
         public static TwainCapability From<TValue>(Capabilities capabilities, TValue value)
