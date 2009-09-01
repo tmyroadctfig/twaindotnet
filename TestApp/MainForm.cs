@@ -26,10 +26,10 @@ namespace TestApp
             {
                 Enabled = true;
 
-                if (_twain.Bitmaps.Count > 0)
+                if (_twain.Images.Count > 0)
                 {
-                    pictureBox1.Image = _twain.Bitmaps[0];
-                    _twain.Bitmaps.Clear();
+                    pictureBox1.Image = _twain.Images[0];
+                    _twain.Images.Clear();
 
                     widthLabel.Text = "Width: " + pictureBox1.Image.Width;
                     heightLabel.Text = "Height: " + pictureBox1.Image.Height;

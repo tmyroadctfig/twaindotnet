@@ -38,10 +38,10 @@ namespace TestAppWpf
                 {
                     IsEnabled = true;
 
-                    if (_twain.Bitmaps.Count > 0)
+                    if (_twain.Images.Count > 0)
                     {
                         image1.Source = Imaging.CreateBitmapSourceFromHBitmap(
-                                _twain.Bitmaps[0].GetHbitmap(),
+                                new System.Drawing.Bitmap(_twain.Images[0]).GetHbitmap(),
                                 IntPtr.Zero,
                                 Int32Rect.Empty,
                                 BitmapSizeOptions.FromEmptyOptions());

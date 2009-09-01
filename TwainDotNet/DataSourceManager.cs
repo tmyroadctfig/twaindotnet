@@ -70,26 +70,6 @@ namespace TwainDotNet
         public event EventHandler ScanningComplete;
 
         /// <summary>
-        /// The scanned in bitmaps. Throws an error if an image is not a bitmap.
-        /// </summary>
-        [Obsolete("Use the Images property instead.")]
-        //this is obsolete because TWAIN supports direct transfer of compressed images,
-        //which aren't necessarily Bitmaps
-		//this breaks compatibity if the client code is calling Bitmaps.Clear()
-		//to clear the image buffer. Not sure what to do about that.
-        public IList<Bitmap> Bitmaps {
-            get {
-                var l = new List<Bitmap>();
-                foreach (Bitmap b in Images)
-                    l.Add(b);
-                return l;
-            }
-            set {
-                Images = (IList<Image>)value;
-            }
-        }
-
-        /// <summary>
         /// The scanned in images.
         /// </summary>
         public IList<Image> Images { get; private set; }
@@ -111,7 +91,7 @@ namespace TwainDotNet
 
         protected IntPtr FilterMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (DataSource.SourceId.Id == IntPtr.Zero)
+            if (DataSource.SourceId.Id == 0)
             {
                 handled = false;
                 return IntPtr.Zero;
@@ -181,7 +161,7 @@ namespace TwainDotNet
 
         protected IList<IntPtr> TransferPictures()
         {
-            if (DataSource.SourceId.Id == IntPtr.Zero)
+            if (DataSource.SourceId.Id == 0)
             {
                 return null;
             }
@@ -296,7 +276,7 @@ namespace TwainDotNet
 
                 IntPtr windowHandle = _messageHook.WindowHandle;
 
-                if (ApplicationId.Id != IntPtr.Zero)
+                if (ApplicationId.Id != 0)
                 {
                     // Close down the data source manager
                     Twain32Native.DsmParent(
@@ -308,7 +288,7 @@ namespace TwainDotNet
                         ref windowHandle);
                 }
 
-                ApplicationId.Id = IntPtr.Zero;
+                ApplicationId.Id = 0;
             }
         }
 

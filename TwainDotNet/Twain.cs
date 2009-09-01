@@ -35,12 +35,6 @@ namespace TwainDotNet
         public IList<Image> Images { get { return _dataSourceManager.Images; } }
 
         /// <summary>
-        /// The scanned in bitmaps. Throws an error if an image is not a bitmap.
-        /// </summary>
-        [Obsolete("Use the Images property instead.")]
-        public IList<Bitmap> Bitmaps { get { return _dataSourceManager.Bitmaps; } }
-
-        /// <summary>
         /// Starts scanning.
         /// </summary>
         public void StartScanning(ScanSettings settings)

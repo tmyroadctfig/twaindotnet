@@ -117,7 +117,7 @@ namespace TwainDotNet
                 var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
                 if ((Duplex)cap.GetBasicValue().Int16Value == Duplex.None)
                 {
-                    Capability.SetCapability(Capabilities.DuplexEnabled, 1, _applicationId, SourceId);
+                    Capability.SetCapability(Capabilities.DuplexEnabled, (short)Duplex.OnePass, _applicationId, SourceId);
                     return true;
                 }
             }
@@ -186,7 +186,6 @@ namespace TwainDotNet
         public static DataSource GetDefault(Identity applicationId, IWindowsMessageHook messageHook)
         {
             var defaultSourceId = new Identity();
-            defaultSourceId.Id = IntPtr.Zero;
 
             // Attempt to get information about the system default source
             var result = Twain32Native.DsmIdentity(
@@ -208,7 +207,6 @@ namespace TwainDotNet
         public static DataSource UserSelected(Identity applicationId, IWindowsMessageHook messageHook)
         {
             var defaultSourceId = new Identity();
-            defaultSourceId.Id = IntPtr.Zero;
 
             Twain32Native.DsmIdentity(
                 applicationId,
@@ -275,7 +273,7 @@ namespace TwainDotNet
 
         public void Close()
         {
-            if (SourceId.Id != IntPtr.Zero)
+            if (SourceId.Id != 0)
             {
                 UserInterface userInterface = new UserInterface();
 
