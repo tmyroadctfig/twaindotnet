@@ -23,7 +23,8 @@ namespace TwainDotNet.TwainNative
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 34)]
         public string ProductName;
 
-        public Identity Clone() {
+        public Identity Clone()
+        {
             var id = (Identity)MemberwiseClone();
             id.Version = Version.Clone();
             return id;

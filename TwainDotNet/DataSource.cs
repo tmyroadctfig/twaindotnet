@@ -83,8 +83,10 @@ namespace TwainDotNet
             throw new NotImplementedException();
         }
 
-        public bool PaperDetectable {
-            get {
+        public bool PaperDetectable
+        {
+            get
+            {
                 return Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId);
             }
         }
@@ -208,6 +210,7 @@ namespace TwainDotNet
         {
             var defaultSourceId = new Identity();
 
+            // Show the TWAIN interface to allow the user to select a source
             Twain32Native.DsmIdentity(
                 applicationId,
                 IntPtr.Zero,
@@ -219,40 +222,70 @@ namespace TwainDotNet
             return new DataSource(applicationId, defaultSourceId, messageHook);
         }
 
-        public static List<DataSource> GetAllSources(Identity appID, IWindowsMessageHook winHook)
+        public static List<DataSource> GetAllSources(Identity applicationId, IWindowsMessageHook messageHook)
         {
-            var s = new List<DataSource>();
+            var sources = new List<DataSource>();
             Identity id = new Identity();
-            var res = Twain32Native.DsmIdentity(appID, IntPtr.Zero, DataGroup.Control, DataArgumentType.Identity, Message.GetFirst, id);
+            
+            // Get the first source
+            var result = Twain32Native.DsmIdentity(
+                applicationId, 
+                IntPtr.Zero, 
+                DataGroup.Control, 
+                DataArgumentType.Identity, 
+                Message.GetFirst, 
+                id);
 
-            if (res == TwainResult.EndOfList)
-                return s;
-            else if (res != TwainResult.Success) {
-                throw new TwainException("MSG_GETFIRST call failed.", res);
+            if (result == TwainResult.EndOfList)
+            {
+                return sources;
+            }
+            else if (result != TwainResult.Success)
+            {
+                throw new TwainException("Error getting first source.", result);
             }
             else
-                s.Add(new DataSource(appID, id, winHook));
-
-            do
             {
-                res = Twain32Native.DsmIdentity(appID, IntPtr.Zero, DataGroup.Control, DataArgumentType.Identity, Message.GetNext, id);
-                if (res == TwainResult.EndOfList) break;
-                if (res != TwainResult.Success)
-                    throw new TwainException("MSG_GETNEXT call failed.", res);
-                s.Add(new DataSource(appID, id, winHook));
-            } while (true);
+                sources.Add(new DataSource(applicationId, id, messageHook));
+            }
 
-            return s;
+            while (true)
+            {
+                // Get the next source
+                result = Twain32Native.DsmIdentity(
+                    applicationId, 
+                    IntPtr.Zero, 
+                    DataGroup.Control, 
+                    DataArgumentType.Identity, 
+                    Message.GetNext, 
+                    id);
+
+                if (result == TwainResult.EndOfList)
+                {
+                    break;
+                }
+                else if (result != TwainResult.Success)
+                {
+                    throw new TwainException("Error enumerating sources.", result);
+                }
+
+                sources.Add(new DataSource(applicationId, id, messageHook));
+            }
+
+            return sources;
         }
 
-        public static DataSource GetSource(string sourceProductName, Identity appID, IWindowsMessageHook winHook)
+        public static DataSource GetSource(string sourceProductName, Identity applicationId, IWindowsMessageHook messageHook)
         {
-            //a little slower than it could be, if enumerating unnecessary sources is slow. But less code duplication.
-            foreach (var source in GetAllSources(appID, winHook))
+            // A little slower than it could be, if enumerating unnecessary sources is slow. But less code duplication.
+            foreach (var source in GetAllSources(applicationId, messageHook))
             {
-                if (sourceProductName == source.SourceId.ProductName)
+                if (sourceProductName.Equals(source.SourceId.ProductName, StringComparison.InvariantCultureIgnoreCase))
+                {
                     return source;
+                }
             }
+
             return null;
         }
 

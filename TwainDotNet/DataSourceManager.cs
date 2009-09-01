@@ -255,9 +255,10 @@ namespace TwainDotNet
             DataSource = DataSource.UserSelected(ApplicationId, _messageHook);
         }
 
-        public void SelectSource(DataSource ds) {
+        public void SelectSource(DataSource dataSource)
+        {
             DataSource.Dispose();
-            DataSource = ds;
+            DataSource = dataSource;
         }
 
         public void Dispose()

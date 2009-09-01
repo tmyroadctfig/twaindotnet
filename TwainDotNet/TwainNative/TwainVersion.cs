@@ -5,9 +5,12 @@ using System.Runtime.InteropServices;
 
 namespace TwainDotNet.TwainNative
 {
+    /// <summary>
+    /// TW_VERSION
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 2, CharSet = CharSet.Ansi)]
     public struct TwainVersion
-    {									// TW_VERSION
+    {
         public short MajorNum;
         public short MinorNum;
         public Language Language;
@@ -16,7 +19,8 @@ namespace TwainDotNet.TwainNative
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 34)]
         public string Info;
 
-        public TwainVersion Clone() {
+        public TwainVersion Clone()
+        {
             return (TwainVersion)MemberwiseClone();
         }
     }
