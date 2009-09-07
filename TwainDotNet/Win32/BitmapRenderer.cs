@@ -8,19 +8,21 @@ using log4net;
 
 namespace TwainDotNet.Win32
 {
-    public class BitmapRenderer
+    public class BitmapRenderer : IDisposable
     {
         /// <summary>
         /// The logger for this class.
         /// </summary>
         static ILog log = LogManager.GetLogger(typeof(BitmapRenderer));
 
+        IntPtr _dibHandle;
         IntPtr _bitmapPointer;
         IntPtr _pixelInfoPointer;
         Rectangle _rectangle;
 
         public BitmapRenderer(IntPtr dibHandle)
         {
+            _dibHandle = dibHandle;
             _bitmapPointer = Kernel32Native.GlobalLock(dibHandle);
 
             BitmapInfoHeader bitmapInfo = new BitmapInfoHeader();
@@ -52,19 +54,42 @@ namespace TwainDotNet.Win32
             _pixelInfoPointer = new IntPtr(pixelInfoPointer);
         }
 
+        ~BitmapRenderer()
+        {
+            Dispose(false);
+        }
+
         public Bitmap RenderToBitmap()
         {
             Bitmap bitmap = new Bitmap(_rectangle.Width, _rectangle.Height);
 
-            Graphics graphics = Graphics.FromImage(bitmap);
-            IntPtr hdc = graphics.GetHdc();
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                IntPtr hdc = graphics.GetHdc();
 
-            Gdi32Native.SetDIBitsToDevice(hdc, 0, 0, _rectangle.Width, _rectangle.Height,
-                0, 0, 0, _rectangle.Height, _pixelInfoPointer, _bitmapPointer, 0);
-
-            graphics.ReleaseHdc(hdc);
+                try
+                {
+                    Gdi32Native.SetDIBitsToDevice(hdc, 0, 0, _rectangle.Width, _rectangle.Height,
+                        0, 0, 0, _rectangle.Height, _pixelInfoPointer, _bitmapPointer, 0);
+                }
+                finally
+                {
+                    graphics.ReleaseHdc(hdc);
+                }
+            }
 
             return bitmap;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Kernel32Native.GlobalUnlock(_dibHandle);
         }
     }
 }

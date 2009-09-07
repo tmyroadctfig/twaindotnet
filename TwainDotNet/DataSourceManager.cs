@@ -132,7 +132,10 @@ namespace TwainDotNet
 
                     foreach (IntPtr image in imagePointers)
                     {
-                        Images.Add(new BitmapRenderer(image).RenderToBitmap());
+                        using (var renderer = new BitmapRenderer(image))
+                        {
+                            Images.Add(renderer.RenderToBitmap());
+                        }
                     }
 
                     EndingScan();
