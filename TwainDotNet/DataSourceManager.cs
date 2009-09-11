@@ -74,6 +74,8 @@ namespace TwainDotNet
         /// </summary>
         public IList<Image> Images { get; private set; }
 
+        public IWindowsMessageHook MessageHook { get { return _messageHook; } }
+
         public void StartScan(ScanSettings settings)
         {
             try

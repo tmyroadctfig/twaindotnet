@@ -47,6 +47,14 @@ namespace TestAppWpf
                                 BitmapSizeOptions.FromEmptyOptions());
                     }
                 };
+
+                var sourceList = _twain.SourceNames;
+                ManualSource.ItemsSource = sourceList;
+
+                if (sourceList != null && sourceList.Count > 0)
+                {
+                    ManualSource.SelectedItem = sourceList[0];
+                }
             };
         }
 
@@ -67,6 +75,11 @@ namespace TestAppWpf
 
             try
             {
+                if (SourceUserSelected.IsChecked == true)
+                {
+                    _twain.SelectSource(ManualSource.SelectedItem.ToString());
+                }
+
                 _twain.StartScanning(_settings);
             }
             catch (TwainException ex)

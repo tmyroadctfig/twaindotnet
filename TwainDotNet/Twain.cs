@@ -47,7 +47,42 @@ namespace TwainDotNet
         /// </summary>
         public void SelectSource()
         {
-            _dataSourceManager.SelectSource();            
+            _dataSourceManager.SelectSource();
+        }
+
+        /// <summary>
+        /// Selects a source based on the product name string.
+        /// </summary>
+        /// <param name="sourceName">The source product name.</param>
+        public void SelectSource(string sourceName)
+        {
+            var source = DataSource.GetSource(
+                sourceName,
+                _dataSourceManager.ApplicationId,
+                _dataSourceManager.MessageHook);
+
+            _dataSourceManager.SelectSource(source);
+        }
+
+        /// <summary>
+        /// Gets a list of source product names.
+        /// </summary>
+        public IList<string> SourceNames
+        {
+            get
+            {
+                var result = new List<string>();
+                var sources = DataSource.GetAllSources(
+                    _dataSourceManager.ApplicationId,
+                    _dataSourceManager.MessageHook);
+
+                foreach (var source in sources)
+                {
+                    result.Add(source.SourceId.ProductName);
+                }
+
+                return result;
+            }
         }
     }
 }
