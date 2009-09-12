@@ -65,6 +65,20 @@ namespace TwainDotNet
         }
 
         /// <summary>
+        /// Gets the product name for the default source.
+        /// </summary>
+        public string DefaultSourceName
+        {
+            get
+            {
+                using (var source = DataSource.GetDefault(_dataSourceManager.ApplicationId, _dataSourceManager.MessageHook))
+                {
+                    return source.SourceId.ProductName;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets a list of source product names.
         /// </summary>
         public IList<string> SourceNames
@@ -79,6 +93,7 @@ namespace TwainDotNet
                 foreach (var source in sources)
                 {
                     result.Add(source.SourceId.ProductName);
+                    source.Dispose();
                 }
 
                 return result;
