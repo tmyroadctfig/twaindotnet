@@ -130,17 +130,14 @@ namespace TwainDotNet
         {
             OpenSource();
 
-            if (!settings.ShowTwainUI)
-            {
-                NegotiateTransferCount(settings);
-                NegotiateFeeder(settings);
-                NegotiateDuplex(settings);
+            NegotiateTransferCount(settings);
+            NegotiateFeeder(settings);
+            NegotiateDuplex(settings);
 
-                if (settings.Resolution != null)
-                {
-                    NegotiateColour(settings);
-                    NegotiateResolution(settings);
-                }
+            if (settings.Resolution != null)
+            {
+                NegotiateColour(settings);
+                NegotiateResolution(settings);
             }
 
             return Enable(settings);

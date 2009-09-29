@@ -78,16 +78,26 @@ namespace TwainDotNet
 
         public void StartScan(ScanSettings settings)
         {
+            bool scanning = false;
+
             try
             {
                 _messageHook.UseFilter = true;
-                DataSource.Open(settings);
+                scanning = DataSource.Open(settings);
             }
             catch (TwainException e)
             {
                 DataSource.Close();
                 EndingScan();
                 throw e;
+            }
+            finally
+            {
+                // Remove the message hook if scan setup failed
+                if (!scanning)
+                {
+                    EndingScan();
+                }
             }
         }
 

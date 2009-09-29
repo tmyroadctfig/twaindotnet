@@ -85,8 +85,9 @@ namespace TestAppWpf
             catch (TwainException ex)
             {
                 MessageBox.Show(ex.Message);
-                IsEnabled = true;
             }
+
+            IsEnabled = true;
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
