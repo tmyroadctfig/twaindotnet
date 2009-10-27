@@ -63,17 +63,7 @@ namespace TwainDotNet
 
         protected ConditionCode GetStatus()
         {
-            Status status = new Status();
-
-            Twain32Native.DsmStatus(
-                _applicationId,
-                _sourceId,
-                DataGroup.Control,
-                DataArgumentType.Status,
-                Message.Get,
-                status);
-
-            return status.ConditionCode;
+            return DataSourceManager.GetConditionCode(_applicationId, _sourceId);
         }
 
         public void SetValue(short value)

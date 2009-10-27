@@ -197,7 +197,8 @@ namespace TwainDotNet
 
             if (result != TwainResult.Success)
             {
-                throw new TwainException("Error getting information about the default source: " + result, result);
+                var status = DataSourceManager.GetConditionCode(applicationId, null);
+                throw new TwainException("Error getting information about the default source: " + result, result, status);
             }
 
             return new DataSource(applicationId, defaultSourceId, messageHook);

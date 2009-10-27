@@ -308,6 +308,21 @@ namespace TwainDotNet
             }
         }
 
+        public static ConditionCode GetConditionCode(Identity applicationId, Identity sourceId)
+        {
+            Status status = new Status();
+
+            Twain32Native.DsmStatus(
+                applicationId,
+                sourceId,
+                DataGroup.Control,
+                DataArgumentType.Status,
+                Message.Get,
+                status);
+
+            return status.ConditionCode;
+        }
+
         public static readonly Identity DefaultApplicationId = new Identity()
         {
             Id = BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0),
