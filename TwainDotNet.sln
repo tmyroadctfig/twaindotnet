@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwainDotNet", "TwainDotNet\TwainDotNet.csproj", "{857B8891-2932-484D-A9A8-D38B47108CF0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{378465E6-6577-41CE-AEA3-DA73541F93A4}"
@@ -12,6 +12,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwainDotNet.WinFroms", "TwainDotNet.WinFroms\TwainDotNet.WinFroms.csproj", "{715EED8D-94FE-40ED-B3F7-59284FA6242B}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = NetPluserviceTelemacoTPL1.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

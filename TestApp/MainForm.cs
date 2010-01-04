@@ -12,6 +12,8 @@ using TwainDotNet.WinFroms;
 
 namespace TestApp
 {
+    using TwainDotNet.TwainNative;
+
     public partial class MainForm : Form
     {
         Twain _twain;
@@ -46,13 +48,15 @@ namespace TestApp
         {
             Enabled = false;
 
-            _settings = new ScanSettings()
+            _settings = new ScanSettings
             {
                 UseDocumentFeeder = useAdfCheckBox.Checked,
                 ShowTwainUI = useUICheckBox.Checked,
-                Resolution = blackAndWhiteCheckBox.Checked
-                    ? ResolutionSettings.Fax
-                    : ResolutionSettings.ColourPhotocopier
+                Resolution =
+                    blackAndWhiteCheckBox.Checked
+                    ? ResolutionSettings.Fax : ResolutionSettings.ColourPhotocopier,
+                Area = !checkBoxArea.Checked
+                    ? null : new AreaSettings(Units.Centimeters, 0.1f, 5.7f, 0.1F + 2.6f, 5.7f + 2.6f)
             };
 
             try

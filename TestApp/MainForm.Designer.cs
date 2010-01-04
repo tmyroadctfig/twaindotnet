@@ -38,6 +38,7 @@
             this.widthLabel = new System.Windows.Forms.Label();
             this.heightLabel = new System.Windows.Forms.Label();
             this.diagnosticsButton = new System.Windows.Forms.Button();
+            this.checkBoxArea = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -93,10 +94,10 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(12, 194);
+            this.saveButton.Location = new System.Drawing.Point(12, 243);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 53);
-            this.saveButton.TabIndex = 5;
+            this.saveButton.TabIndex = 2;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
@@ -114,34 +115,47 @@
             // widthLabel
             // 
             this.widthLabel.AutoSize = true;
-            this.widthLabel.Location = new System.Drawing.Point(12, 254);
+            this.widthLabel.Location = new System.Drawing.Point(12, 214);
             this.widthLabel.Name = "widthLabel";
-            this.widthLabel.Size = new System.Drawing.Size(0, 13);
+            this.widthLabel.Size = new System.Drawing.Size(35, 13);
             this.widthLabel.TabIndex = 7;
+            this.widthLabel.Text = "Width";
             // 
             // heightLabel
             // 
             this.heightLabel.AutoSize = true;
-            this.heightLabel.Location = new System.Drawing.Point(12, 271);
+            this.heightLabel.Location = new System.Drawing.Point(12, 227);
             this.heightLabel.Name = "heightLabel";
-            this.heightLabel.Size = new System.Drawing.Size(0, 13);
+            this.heightLabel.Size = new System.Drawing.Size(38, 13);
             this.heightLabel.TabIndex = 8;
+            this.heightLabel.Text = "Height";
             // 
             // diagnosticsButton
             // 
-            this.diagnosticsButton.Location = new System.Drawing.Point(12, 254);
+            this.diagnosticsButton.Location = new System.Drawing.Point(12, 302);
             this.diagnosticsButton.Name = "diagnosticsButton";
             this.diagnosticsButton.Size = new System.Drawing.Size(75, 40);
-            this.diagnosticsButton.TabIndex = 9;
+            this.diagnosticsButton.TabIndex = 3;
             this.diagnosticsButton.Text = "Diagnostics";
             this.diagnosticsButton.UseVisualStyleBackColor = true;
             this.diagnosticsButton.Click += new System.EventHandler(this.diagnostics_Click);
+            // 
+            // checkBoxArea
+            // 
+            this.checkBoxArea.AutoSize = true;
+            this.checkBoxArea.Location = new System.Drawing.Point(12, 194);
+            this.checkBoxArea.Name = "checkBoxArea";
+            this.checkBoxArea.Size = new System.Drawing.Size(73, 17);
+            this.checkBoxArea.TabIndex = 10;
+            this.checkBoxArea.Text = "Grab area";
+            this.checkBoxArea.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(572, 625);
+            this.Controls.Add(this.checkBoxArea);
             this.Controls.Add(this.diagnosticsButton);
             this.Controls.Add(this.heightLabel);
             this.Controls.Add(this.widthLabel);
@@ -173,6 +187,7 @@
         private System.Windows.Forms.Label widthLabel;
         private System.Windows.Forms.Label heightLabel;
         private System.Windows.Forms.Button diagnosticsButton;
+        private System.Windows.Forms.CheckBox checkBoxArea;
     }
 }
 
