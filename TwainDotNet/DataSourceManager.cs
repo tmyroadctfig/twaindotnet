@@ -167,7 +167,7 @@ namespace TwainDotNet
                     break;
 
                 case Message.DeviceEvent:
-                    break;
+                    break;                    
             }
 
             handled = true;
@@ -189,9 +189,9 @@ namespace TwainDotNet
             {
                 pendingTransfer.Count = 0;
                 IntPtr hbitmap = IntPtr.Zero;
-                ImageInfo imageInfo = new ImageInfo();
 
                 // Get the image info
+                ImageInfo imageInfo = new ImageInfo();
                 result = Twain32Native.DsImageInfo(
                     ApplicationId,
                     DataSource.SourceId,
@@ -204,7 +204,7 @@ namespace TwainDotNet
                 {
                     DataSource.Close();
                     break;
-                }
+                }                
 
                 // Transfer the image from the device
                 result = Twain32Native.DsImageTransfer(

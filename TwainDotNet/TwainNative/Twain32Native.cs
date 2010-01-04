@@ -36,13 +36,6 @@ namespace TwainDotNet.TwainNative
         /// <summary>
         /// DSM_Entry with a user interface parameter. Acts on the data source.
         /// </summary>
-        /// <param name="origin"></param>
-        /// <param name="dest"></param>
-        /// <param name="dg"></param>
-        /// <param name="dat"></param>
-        /// <param name="msg"></param>
-        /// <param name="ui"></param>
-        /// <returns></returns>
         [DllImport("twain_32.dll", EntryPoint = "#1")]
         public static extern TwainResult DsUserInterface([In, Out] Identity origin, [In, Out] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, UserInterface ui);
 
@@ -53,13 +46,13 @@ namespace TwainDotNet.TwainNative
         public static extern TwainResult DsImageInfo([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] ImageInfo imginf);
 
         [DllImport("twain_32.dll", EntryPoint = "#1")]
+        public static extern TwainResult DsImageLayout([In, Out] Identity origin, [In, Out] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] ImageLayout imglyt);
+
+        [DllImport("twain_32.dll", EntryPoint = "#1")]
         public static extern TwainResult DsImageTransfer([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, ref IntPtr hbitmap);
 
         [DllImport("twain_32.dll", EntryPoint = "#1")]
         public static extern TwainResult DsPendingTransfer([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] PendingXfers pxfr);
-
-
-
 
         [DllImport("twain_32.dll", EntryPoint = "#1")]
         public static extern TwainResult DsStatus([In, Out] Identity origin, [In] Identity dest, DataGroup dg, DataArgumentType dat, Message msg, [In, Out] Status dsmstat);

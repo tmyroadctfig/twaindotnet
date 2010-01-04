@@ -214,6 +214,6 @@ namespace TwainDotNet
             }
 
             return capResult.BoolValue;
-        }
+        }       
     }
 }

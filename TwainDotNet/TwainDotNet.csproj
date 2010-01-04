@@ -55,6 +55,7 @@
     <Compile Include="FeederEmptyException.cs" />
     <Compile Include="IWindowsMessageHook.cs" />
     <Compile Include="ResolutionSettings.cs" />
+    <Compile Include="AreaSettings.cs" />
     <Compile Include="ScanSettings.cs" />
     <Compile Include="TwainException.cs" />
     <Compile Include="TwainNative\CapabilityArrayValue.cs" />
@@ -64,6 +65,9 @@
     <Compile Include="TwainNative\ConditionCode.cs" />
     <Compile Include="TwainNative\Country.cs" />
     <Compile Include="TwainNative\Duplex.cs" />
+    <Compile Include="TwainNative\Fix32.cs" />
+    <Compile Include="TwainNative\Frame.cs" />
+    <Compile Include="TwainNative\ImageLayout.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
     <Compile Include="TwainNative\TransferMechanism.cs" />
     <Compile Include="TwainNative\TwainCapability.cs">

@@ -112,6 +112,21 @@ namespace TwainDotNet
             }
         }
 
+        AreaSettings _area;
+        
+        public AreaSettings Area
+        {
+            get { return _area; }
+            set
+            {
+                if (value != _area)
+                {
+                    _area = value;
+                    OnPropertyChanged("Area");
+                }                
+            }
+        }
+
         #region INotifyPropertyChanged Members
 
         protected void OnPropertyChanged(string propertyName)
@@ -129,7 +144,7 @@ namespace TwainDotNet
         public static readonly ScanSettings Default = new ScanSettings()
         {
             Resolution = ResolutionSettings.ColourPhotocopier
-        };
+        };        
 
         /// <summary>
         /// The value to set to scan all available pages.
