@@ -9,7 +9,7 @@ namespace TwainDotNet
     {
         public ScanSettings()
         {
-            ShoulTransferAllPages = true;
+            ShoulTransferAllPages = true;            
         }
 
         bool _showTwainUI;

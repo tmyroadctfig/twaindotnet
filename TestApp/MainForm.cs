@@ -16,8 +16,10 @@ namespace TestApp
 
     public partial class MainForm : Form
     {
+        private static AreaSettings AreaSettings = new AreaSettings(Units.Centimeters, 0.1f, 5.7f, 0.1F + 2.6f, 5.7f + 2.6f);
+
         Twain _twain;
-        ScanSettings _settings;
+        ScanSettings _settings;        
 
         public MainForm()
         {
@@ -55,8 +57,7 @@ namespace TestApp
                 Resolution =
                     blackAndWhiteCheckBox.Checked
                     ? ResolutionSettings.Fax : ResolutionSettings.ColourPhotocopier,
-                Area = !checkBoxArea.Checked
-                    ? null : new AreaSettings(Units.Centimeters, 0.1f, 5.7f, 0.1F + 2.6f, 5.7f + 2.6f)
+                Area = !checkBoxArea.Checked ? null : AreaSettings
             };
 
             try

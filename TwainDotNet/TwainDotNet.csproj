@@ -68,6 +68,7 @@
     <Compile Include="TwainNative\Fix32.cs" />
     <Compile Include="TwainNative\Frame.cs" />
     <Compile Include="TwainNative\ImageLayout.cs" />
+    <Compile Include="TwainNative\PageType.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
     <Compile Include="TwainNative\TransferMechanism.cs" />
     <Compile Include="TwainNative\TwainCapability.cs">

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using TwainDotNet.TwainNative;
 using System.Runtime.InteropServices;
 using TwainDotNet.Win32;

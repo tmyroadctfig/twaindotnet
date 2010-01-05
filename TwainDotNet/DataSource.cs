@@ -129,7 +129,6 @@ namespace TwainDotNet
         public bool Open(ScanSettings settings)
         {
             OpenSource();
-
             NegotiateTransferCount(settings);
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
@@ -138,8 +137,6 @@ namespace TwainDotNet
                 NegotiateColour(settings);
                 NegotiateResolution(settings);
             }
-
-            // If null, simply ignore
             if (settings.Area != null)
             {
                 NegotiateArea(settings);
@@ -153,7 +150,10 @@ namespace TwainDotNet
             if (area == null)
                 return false;
 
-            Capability.SetCapability(Capabilities.IUnits, (short)area.Units, _applicationId, SourceId);
+            var cap = new Capability(Capabilities.IUnits, TwainType.Int16, this._applicationId, this.SourceId);
+            if ((Units)cap.GetBasicValue().Int16Value != area.Units)
+                Capability.SetCapability(Capabilities.IUnits, (short)area.Units, _applicationId, SourceId);
+
             var imageLayout = new ImageLayout 
             {
                 Frame = new Frame
