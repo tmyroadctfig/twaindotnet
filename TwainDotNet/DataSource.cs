@@ -116,10 +116,10 @@ namespace TwainDotNet
         {
             if (scanSettings.UseDuplex)
             {
-                var cap = new Capability(Capabilities.Duplex, TwainType.Int16, this._applicationId, this.SourceId);
+                var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
                 if ((Duplex)cap.GetBasicValue().Int16Value == Duplex.None)
                 {
-                    Capability.SetCapability(Capabilities.DuplexEnabled, (short)Duplex.OnePass, this._applicationId, this.SourceId);
+                    Capability.SetCapability(Capabilities.DuplexEnabled, (short)Duplex.OnePass, _applicationId, SourceId);
                     return true;
                 }
             }
@@ -132,27 +132,35 @@ namespace TwainDotNet
             NegotiateTransferCount(settings);
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
+
             if (settings.Resolution != null)
             {
                 NegotiateColour(settings);
                 NegotiateResolution(settings);
             }
+
             if (settings.Area != null)
             {
                 NegotiateArea(settings);
             }
+
             return Enable(settings);
         }
 
         private bool NegotiateArea(ScanSettings scanSettings)
         {
             var area = scanSettings.Area;
-            if (area == null)
-                return false;
 
-            var cap = new Capability(Capabilities.IUnits, TwainType.Int16, this._applicationId, this.SourceId);
+            if (area == null)
+            {
+                return false;
+            }
+
+            var cap = new Capability(Capabilities.IUnits, TwainType.Int16, _applicationId, SourceId);
             if ((Units)cap.GetBasicValue().Int16Value != area.Units)
+            {
                 Capability.SetCapability(Capabilities.IUnits, (short)area.Units, _applicationId, SourceId);
+            }
 
             var imageLayout = new ImageLayout 
             {
@@ -164,15 +172,20 @@ namespace TwainDotNet
                     Bottom = new Fix32(area.Bottom)
                 } 
             };
+
             var result = Twain32Native.DsImageLayout(
-                this._applicationId,
-                this.SourceId,
+                _applicationId,
+                SourceId,
                 DataGroup.Image,
                 DataArgumentType.ImageLayout,
                 Message.Set,
                 imageLayout);
+
             if (result != TwainResult.Success)
+            {
                 throw new TwainException("DsImageLayout.GetDefault error", result);
+            }
+
             return true;
         }
 

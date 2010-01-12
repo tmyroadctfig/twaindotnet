@@ -1,8 +1,8 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace TwainDotNet.TwainNative
 {
-    using System;
-    using System.Runtime.InteropServices;
-
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public class Fix32
     {

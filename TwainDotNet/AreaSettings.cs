@@ -1,17 +1,17 @@
+using System.ComponentModel;
+using TwainDotNet.TwainNative;
+
 namespace TwainDotNet
 {
-    using System.ComponentModel;
-    using TwainNative;
-
     public class AreaSettings : INotifyPropertyChanged
     {
-        private Units units;
+        private Units _units;
         public Units Units
         {
-            get { return this.units; }
+            get { return _units; }
             set
             {
-                this.units = value;
+                _units = value;
                 OnPropertyChanged("Units");
             }
         }
@@ -19,10 +19,10 @@ namespace TwainDotNet
         private float _top;
         public float Top
         {
-            get { return this._top; }
+            get { return _top; }
             private set
             {
-                this._top = value;
+                _top = value;
                 OnPropertyChanged("Top");
             }
         }
@@ -30,10 +30,10 @@ namespace TwainDotNet
         private float _left;
         public float Left
         {
-            get { return this._left; }
+            get { return _left; }
             private set
             {
-                this._left = value;
+                _left = value;
                 OnPropertyChanged("Left");
             }
         }
@@ -41,10 +41,10 @@ namespace TwainDotNet
         private float _bottom;
         public float Bottom 
         {
-            get { return this._bottom; }
+            get { return _bottom; }
             private set
             {
-                this._bottom = value;
+                _bottom = value;
                 OnPropertyChanged("Bottom");
             }
         }
@@ -52,21 +52,21 @@ namespace TwainDotNet
         private float _right;
         public float Right
         {
-            get { return this._right; }
+            get { return _right; }
             private set
             {
-                this._right = value;
+                _right = value;
                 OnPropertyChanged("Right");
             }
         }
 
         public AreaSettings(Units units, float top, float left, float bottom, float right)
         {
-            this.Units = units;
-            this._top = top;
-            this._left = left;
-            this._bottom = bottom;
-            this._right = right;
+            _units = units;
+            _top = top;
+            _left = left;
+            _bottom = bottom;
+            _right = right;
         }               
 
         #region INotifyPropertyChanged Members

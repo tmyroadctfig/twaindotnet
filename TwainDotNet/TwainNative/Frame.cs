@@ -1,7 +1,7 @@
+using System.Runtime.InteropServices;
+
 namespace TwainDotNet.TwainNative
 {
-    using System.Runtime.InteropServices;
-
     // all values are in Inches (2.54 cm)
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public class Frame

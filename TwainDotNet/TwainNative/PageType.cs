@@ -3,33 +3,41 @@
     public enum PageType
     {
         None = 0,
+
         /// <summary>
         /// A4 ad A4Letter
         /// </summary>
         A4 = 1,
+
         /// <summary>
         /// JISB5 and B5Letter
         /// </summary>
         JISB5 = 2,
+
         UsLetter = 3,
         UsLegal = 4,
         A5 = 5,
+
         /// <summary>
         /// ISOB4 and B4
         /// </summary>
         ISOB4 = 6,
+
         /// <summary>
         /// ISOB6 and B6
         /// </summary>
         ISOB6 = 7,
+
         B = 8,
         UsLedger = 9,
         UsExecutive = 10,
         A3 = 11,
+
         /// <summary>
         /// ISOB3 and B3
         /// </summary>
         ISOB3 = 12,
+
         A6 = 13,
         C4 = 14,
         C5 = 15,
