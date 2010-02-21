@@ -90,6 +90,7 @@ namespace TwainDotNet.Win32
         protected virtual void Dispose(bool disposing)
         {
             Kernel32Native.GlobalUnlock(_dibHandle);
+            Kernel32Native.GlobalFree(_dibHandle);
         }
     }
 }
