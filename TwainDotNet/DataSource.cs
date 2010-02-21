@@ -93,7 +93,7 @@ namespace TwainDotNet
 
         public void NegotiateColour(ScanSettings scanSettings)
         {
-            Capability.SetCapability(Capabilities.IPixelType, (short)GetPixelType(scanSettings), _applicationId, SourceId);
+            Capability.SetBasicCapability(Capabilities.IPixelType, (ushort)GetPixelType(scanSettings), TwainType.UInt16, _applicationId, SourceId);
 
             // TODO: Also set this for colour scanning
             if (scanSettings.Resolution.ColourSetting != ColourSetting.Colour)
