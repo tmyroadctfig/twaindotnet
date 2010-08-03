@@ -9,7 +9,7 @@ namespace TwainDotNet
     {
         public ScanSettings()
         {
-            ShoulTransferAllPages = true;            
+            ShouldTransferAllPages = true;            
         }
 
         bool _showTwainUI;
@@ -62,7 +62,7 @@ namespace TwainDotNet
                 {
                     _transferCount = value;
                     OnPropertyChanged("TransferCount");
-                    OnPropertyChanged("ShoulTransferAllPages");
+                    OnPropertyChanged("ShouldTransferAllPages");
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace TwainDotNet
         /// <summary>
         /// Indicates if all pages should be transferred.
         /// </summary>
-        public bool ShoulTransferAllPages
+        public bool ShouldTransferAllPages
         {
             get { return _transferCount == TransferAllPages; }
             set { TransferCount = value ? TransferAllPages : (short) 1; }
@@ -127,6 +127,25 @@ namespace TwainDotNet
             }
         }
 
+        PageSettings _page;
+
+        /// <summary>
+        /// The page / paper settings. Set null to use current defaults.
+        /// </summary>
+        /// <value>The page.</value>
+        public PageSettings Page 
+        {
+            get { return _page; }
+            set
+            {
+                if (value != _page)
+                {
+                    _page = value;
+                    OnPropertyChanged("Page");
+                }
+            }
+        }
+
         #region INotifyPropertyChanged Members
 
         protected void OnPropertyChanged(string propertyName)
@@ -143,7 +162,8 @@ namespace TwainDotNet
         /// </summary>
         public static readonly ScanSettings Default = new ScanSettings()
         {
-            Resolution = ResolutionSettings.ColourPhotocopier
+            Resolution = ResolutionSettings.ColourPhotocopier,
+            Page = PageSettings.Default
         };        
 
         /// <summary>

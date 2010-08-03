@@ -126,12 +126,41 @@ namespace TwainDotNet
             return false;
         }
 
+
+        public void NegotiatePageSize(ScanSettings scanSettings)
+        {
+            var cap = new Capability(Capabilities.Supportedsizes, TwainType.Int16, _applicationId, SourceId);
+            if ((PageType)cap.GetBasicValue().Int16Value != PageType.UsLetter)
+            {
+                Capability.SetBasicCapability(Capabilities.Supportedsizes, (ushort) scanSettings.Page.Size, TwainType.UInt16, _applicationId, SourceId);
+            }
+        }
+
+
+        public void NegotiateOrientation(ScanSettings scanSettings)
+        {
+            // Set orientation (default is portrait)
+            var cap = new Capability(Capabilities.Orientation, TwainType.Int16, _applicationId, SourceId);
+            if ((Orientation)cap.GetBasicValue().Int16Value != Orientation.Default)
+            {
+                Capability.SetBasicCapability(Capabilities.Orientation, (ushort)scanSettings.Page.Orientation, TwainType.UInt16, _applicationId, SourceId);
+            }
+        }
+
+
         public bool Open(ScanSettings settings)
         {
             OpenSource();
             NegotiateTransferCount(settings);
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
+
+            if (settings.UseDocumentFeeder 
+                && settings.Page != null)
+            {
+                NegotiatePageSize(settings);
+                NegotiateOrientation(settings);
+            }
 
             if (settings.Resolution != null)
             {

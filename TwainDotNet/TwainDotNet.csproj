@@ -54,6 +54,7 @@
     <Compile Include="Diagnostics.cs" />
     <Compile Include="FeederEmptyException.cs" />
     <Compile Include="IWindowsMessageHook.cs" />
+    <Compile Include="PageSettings.cs" />
     <Compile Include="ResolutionSettings.cs" />
     <Compile Include="AreaSettings.cs" />
     <Compile Include="ScanSettings.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="TwainNative\Fix32.cs" />
     <Compile Include="TwainNative\Frame.cs" />
     <Compile Include="TwainNative\ImageLayout.cs" />
+    <Compile Include="TwainNative\Orientation.cs" />
     <Compile Include="TwainNative\PageType.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
     <Compile Include="TwainNative\TransferMechanism.cs" />
