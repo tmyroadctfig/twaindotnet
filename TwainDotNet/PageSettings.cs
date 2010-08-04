@@ -49,15 +49,6 @@ namespace TwainDotNet
             }
         }
 
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public PageSettings()
         {
             Size = PageType.UsLetter;
@@ -72,6 +63,15 @@ namespace TwainDotNet
             Size = PageType.UsLetter,
             Orientation = Orientation.Default
         };
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         #endregion
     }

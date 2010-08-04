@@ -126,7 +126,6 @@ namespace TwainDotNet
             return false;
         }
 
-
         public void NegotiatePageSize(ScanSettings scanSettings)
         {
             var cap = new Capability(Capabilities.Supportedsizes, TwainType.Int16, _applicationId, SourceId);
@@ -135,7 +134,6 @@ namespace TwainDotNet
                 Capability.SetBasicCapability(Capabilities.Supportedsizes, (ushort) scanSettings.Page.Size, TwainType.UInt16, _applicationId, SourceId);
             }
         }
-
 
         public void NegotiateOrientation(ScanSettings scanSettings)
         {
@@ -147,7 +145,6 @@ namespace TwainDotNet
             }
         }
 
-
         public bool Open(ScanSettings settings)
         {
             OpenSource();
@@ -155,8 +152,7 @@ namespace TwainDotNet
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
 
-            if (settings.UseDocumentFeeder 
-                && settings.Page != null)
+            if (settings.UseDocumentFeeder && settings.Page != null)
             {
                 NegotiatePageSize(settings);
                 NegotiateOrientation(settings);
