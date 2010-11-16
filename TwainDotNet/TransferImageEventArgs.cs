@@ -5,9 +5,9 @@ namespace TwainDotNet
 {
     public class TransferImageEventArgs : EventArgs
     {
-        public Image Image { get; private set; }
+        public Bitmap Image { get; private set; }
 
-        public TransferImageEventArgs(Image image)
+        public TransferImageEventArgs(Bitmap image)
         {
             this.Image = image;
         }
