@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Drawing;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using log4net;
 
 namespace TwainDotNet.Win32
@@ -19,37 +17,38 @@ namespace TwainDotNet.Win32
         IntPtr _bitmapPointer;
         IntPtr _pixelInfoPointer;
         Rectangle _rectangle;
+        BitmapInfoHeader _bitmapInfo;
 
         public BitmapRenderer(IntPtr dibHandle)
         {
             _dibHandle = dibHandle;
             _bitmapPointer = Kernel32Native.GlobalLock(dibHandle);
 
-            BitmapInfoHeader bitmapInfo = new BitmapInfoHeader();
-            Marshal.PtrToStructure(_bitmapPointer, bitmapInfo);
-            log.Debug(bitmapInfo.ToString());
+            _bitmapInfo = new BitmapInfoHeader();
+            Marshal.PtrToStructure(_bitmapPointer, _bitmapInfo);
+            log.Debug(_bitmapInfo.ToString());
 
             _rectangle = new Rectangle();
             _rectangle.X = _rectangle.Y = 0;
-            _rectangle.Width = bitmapInfo.Width;
-            _rectangle.Height = bitmapInfo.Height;
+            _rectangle.Width = _bitmapInfo.Width;
+            _rectangle.Height = _bitmapInfo.Height;
 
-            if (bitmapInfo.SizeImage == 0)
+            if (_bitmapInfo.SizeImage == 0)
             {
-                bitmapInfo.SizeImage = ((((bitmapInfo.Width * bitmapInfo.BitCount) + 31) & ~31) >> 3) * bitmapInfo.Height;
+                _bitmapInfo.SizeImage = ((((_bitmapInfo.Width * _bitmapInfo.BitCount) + 31) & ~31) >> 3) * _bitmapInfo.Height;
             }
 
 
             // The following code only works on x86
             Debug.Assert(Marshal.SizeOf(typeof(IntPtr)) == 4);
 
-            int pixelInfoPointer = bitmapInfo.ClrUsed;
-            if ((pixelInfoPointer == 0) && (bitmapInfo.BitCount <= 8))
+            int pixelInfoPointer = _bitmapInfo.ClrUsed;
+            if ((pixelInfoPointer == 0) && (_bitmapInfo.BitCount <= 8))
             {
-                pixelInfoPointer = 1 << bitmapInfo.BitCount;
+                pixelInfoPointer = 1 << _bitmapInfo.BitCount;
             }
 
-            pixelInfoPointer = (pixelInfoPointer * 4) + bitmapInfo.Size + _bitmapPointer.ToInt32();
+            pixelInfoPointer = (pixelInfoPointer * 4) + _bitmapInfo.Size + _bitmapPointer.ToInt32();
 
             _pixelInfoPointer = new IntPtr(pixelInfoPointer);
         }
@@ -78,7 +77,16 @@ namespace TwainDotNet.Win32
                 }
             }
 
+            bitmap.SetResolution(PpmToDpi(_bitmapInfo.XPelsPerMeter), PpmToDpi(_bitmapInfo.YPelsPerMeter));
+
             return bitmap;
+        }
+
+        private static float PpmToDpi(double pixelsPerMeter)
+        {
+            double pixelsPerMillimeter = (double)pixelsPerMeter / 1000.0;
+            double dotsPerInch = pixelsPerMillimeter * 25.4;
+            return (float)Math.Round(dotsPerInch, 2);
         }
 
         public void Dispose()
