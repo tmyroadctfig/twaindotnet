@@ -58,6 +58,7 @@
     <Compile Include="ResolutionSettings.cs" />
     <Compile Include="AreaSettings.cs" />
     <Compile Include="ScanSettings.cs" />
+    <Compile Include="TransferImageEventArgs.cs" />
     <Compile Include="TwainException.cs" />
     <Compile Include="TwainNative\CapabilityArrayValue.cs" />
     <Compile Include="TwainNative\CapabilityEnumValue.cs" />

@@ -28,7 +28,7 @@ namespace TwainDotNet
             ApplicationId = applicationId.Clone();
 
             ScanningComplete += delegate { };
-            Images = new List<Image>();
+            TransferImage += delegate { };
 
             _messageHook = messageHook;
             _messageHook.FilterMessageCallback = FilterMessage;
@@ -68,10 +68,7 @@ namespace TwainDotNet
         /// </summary>
         public event EventHandler ScanningComplete;
 
-        /// <summary>
-        /// The scanned in images.
-        /// </summary>
-        public IList<Image> Images { get; private set; }
+        public event EventHandler<TransferImageEventArgs> TransferImage;
 
         public IWindowsMessageHook MessageHook { get { return _messageHook; } }
 
@@ -139,15 +136,7 @@ namespace TwainDotNet
             switch (_eventMessage.Message)
             {
                 case Message.XFerReady:
-                    IList<IntPtr> imagePointers = TransferPictures();
-
-                    foreach (IntPtr image in imagePointers)
-                    {
-                        using (var renderer = new BitmapRenderer(image))
-                        {
-                            Images.Add(renderer.RenderToBitmap());
-                        }
-                    }
+                    TransferPictures();
 
                     EndingScan();
                     DataSource.Close();
@@ -166,21 +155,20 @@ namespace TwainDotNet
                     break;
 
                 case Message.DeviceEvent:
-                    break;                    
+                    break;
             }
 
             handled = true;
             return IntPtr.Zero;
         }
 
-        protected IList<IntPtr> TransferPictures()
+        protected void TransferPictures()
         {
             if (DataSource.SourceId.Id == 0)
             {
-                return null;
+                return;
             }
 
-            List<IntPtr> picturePointers = new List<IntPtr>();
             PendingXfers pendingTransfer = new PendingXfers();
             TwainResult result;
 
@@ -203,7 +191,7 @@ namespace TwainDotNet
                 {
                     DataSource.Close();
                     break;
-                }                
+                }
 
                 // Transfer the image from the device
                 result = Twain32Native.DsImageTransfer(
@@ -241,7 +229,10 @@ namespace TwainDotNet
                 }
                 else
                 {
-                    picturePointers.Add(hbitmap);
+                    using (var renderer = new BitmapRenderer(hbitmap))
+                    {
+                        TransferImage(this, new TransferImageEventArgs(renderer.RenderToBitmap()));
+                    }
                 }
             }
             while (pendingTransfer.Count != 0);
@@ -254,8 +245,6 @@ namespace TwainDotNet
                 DataArgumentType.PendingXfers,
                 Message.Reset,
                 pendingTransfer);
-
-            return picturePointers;
         }
 
         protected void EndingScan()
@@ -282,7 +271,7 @@ namespace TwainDotNet
         }
 
         protected virtual void Dispose(bool disposing)
-        {            
+        {
             Marshal.FreeHGlobal(_eventMessage.EventPtr);
 
             if (disposing)

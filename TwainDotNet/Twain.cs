@@ -15,12 +15,17 @@ namespace TwainDotNet
 
         public Twain(IWindowsMessageHook messageHook)
         {
-            ScanningComplete += delegate {};
-            
+            ScanningComplete += delegate { };
+            TransferImage += delegate { };
+
             _dataSourceManager = new DataSourceManager(DataSourceManager.DefaultApplicationId, messageHook);
             _dataSourceManager.ScanningComplete += delegate
             {
                 ScanningComplete(this, EventArgs.Empty);
+            };
+            _dataSourceManager.TransferImage += delegate(object sender, TransferImageEventArgs args)
+            {
+                TransferImage(this, args);
             };
         }
 
@@ -29,10 +34,7 @@ namespace TwainDotNet
         /// </summary>
         public event EventHandler ScanningComplete;
 
-        /// <summary>
-        /// The scanned in images.
-        /// </summary>
-        public IList<Image> Images { get { return _dataSourceManager.Images; } }
+        public event EventHandler<TransferImageEventArgs> TransferImage;
 
         /// <summary>
         /// Starts scanning.

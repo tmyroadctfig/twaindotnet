@@ -34,18 +34,20 @@ namespace TestAppWpf
             Loaded += delegate
             {
                 _twain = new Twain(new WpfWindowMessageHook(this));
-                _twain.ScanningComplete += delegate
+                _twain.TransferImage += delegate(Object sender, TransferImageEventArgs args)
                 {
-                    IsEnabled = true;
-
-                    if (_twain.Images.Count > 0)
+                    if (args.Image != null)
                     {
                         image1.Source = Imaging.CreateBitmapSourceFromHBitmap(
-                                new System.Drawing.Bitmap(_twain.Images[0]).GetHbitmap(),
+                                new System.Drawing.Bitmap(args.Image).GetHbitmap(),
                                 IntPtr.Zero,
                                 Int32Rect.Empty,
                                 BitmapSizeOptions.FromEmptyOptions());
                     }
+                };
+                _twain.ScanningComplete += delegate
+                {
+                    IsEnabled = true;
                 };
 
                 var sourceList = _twain.SourceNames;
@@ -99,7 +101,7 @@ namespace TestAppWpf
                 if (sfd.ShowDialog() == true)
                 {
                     PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create((BitmapSource) image1.Source));
+                    encoder.Frames.Add(BitmapFrame.Create((BitmapSource)image1.Source));
 
                     using (FileStream stream = new FileStream(sfd.FileName, FileMode.OpenOrCreate))
                     {
