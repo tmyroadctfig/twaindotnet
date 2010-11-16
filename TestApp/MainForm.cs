@@ -19,25 +19,26 @@ namespace TestApp
         private static AreaSettings AreaSettings = new AreaSettings(Units.Centimeters, 0.1f, 5.7f, 0.1F + 2.6f, 5.7f + 2.6f);
 
         Twain _twain;
-        ScanSettings _settings;        
+        ScanSettings _settings;
 
         public MainForm()
         {
             InitializeComponent();
 
             _twain = new Twain(new WinFormsWindowMessageHook(this));
-            _twain.ScanningComplete += delegate
+            _twain.TransferImage += delegate(Object sender, TransferImageEventArgs args)
             {
-                Enabled = true;
-
-                if (_twain.Images.Count > 0)
+                if (args.Image != null)
                 {
-                    pictureBox1.Image = _twain.Images[0];
-                    _twain.Images.Clear();
+                    pictureBox1.Image = args.Image;
 
                     widthLabel.Text = "Width: " + pictureBox1.Image.Width;
                     heightLabel.Text = "Height: " + pictureBox1.Image.Height;
                 }
+            };
+            _twain.ScanningComplete += delegate
+            {
+                Enabled = true;
             };
         }
 
