@@ -4,9 +4,6 @@ using System.Text;
 
 namespace TwainDotNet.TwainNative
 {
-    /// <summary>
-    /// ICAP_XFERMECH values (Image Transfer)
-    /// </summary>
     public enum TransferMechanism : short
     {
         Native = 0,

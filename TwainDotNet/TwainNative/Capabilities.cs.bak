@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.ComponentModel;
 
 namespace TwainDotNet.TwainNative
 {
     public enum Capabilities : short
     {
-        // all data sources are REQUIRED to support these capabilities
         XferCount = 0x0001,
-
-        // image data sources are REQUIRED to support these capabilities
         ICompression = 0x0100,
         IPixelType = 0x0101,
         IUnits = 0x0102,
         IXferMech = 0x0103,
 
-        // all data sources MAY support these capabilities
         Author = 0x1000,
         Caption = 0x1001,
         FeederEnabled = 0x1002,
@@ -28,8 +23,6 @@ namespace TwainDotNet.TwainNative
         ClearPage = 0x1008,
         FeedPage = 0x1009,
         RewindPage = 0x100a,
-       
-        [Description("Controls progress indicator window during transfer and acquisition")]
         Indicators = 0x100b,
         SupportedCapsExt = 0x100c,
         PaperDetectable = 0x100d,
@@ -74,8 +67,6 @@ namespace TwainDotNet.TwainNative
         MicrEnabled = 0x1038,
         FeederPrep = 0x1039,
         Feederpocket = 0x103a,
-
-        // image data sources MAY support these capabilities
         Autobright = 0x1100,
         Brightness = 0x1101,
         Contrast = 0x1103,
@@ -149,14 +140,6 @@ namespace TwainDotNet.TwainNative
         Feedertype = 0x1154,
         Iccprofile = 0x1155,
         Autosize = 0x1156,
-        AutomaticCropUsesFrame = 0x1157,            /* Added 2.1 */
-        AutomaticLengthDetection = 0x1158,          /* Added 2.1 */
-        AutomaticColorEnabled = 0x1159,             /* Added 2.1 */
-        AutomaticColorNonColorPixelType = 0x115a,   /* Added 2.1 */
-        ColorManagementEnabled = 0x115b,            /* Added 2.1 */
-        ImageMerge = 0x115c,                        /* Added 2.1 */
-        ImageMergeHeightThreshold =   0x115d,       /* Added 2.1 */
-        SupoortedExtImageInfo = 0x115e,             /* Added 2.1 */
         Audiofileformat = 0x1201,
         Xfermech = 0x1202
     }

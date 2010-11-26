@@ -19,6 +19,6 @@ namespace TwainDotNet.TwainNative
         public short BitsPerPixel;
         public short Planar;
         public short PixelType;
-        public Compression Compression;
+        public short Compression;
     }
 }

@@ -30,6 +30,29 @@ namespace TwainDotNet
             }
         }
 
+        bool _showProgresDialog;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [show progress dialog].
+        /// If TRUE, the Source will display a progress indicator during acquisition and transfer, regardless of whether the Source's user interface is active. 
+        /// If FALSE, the progress indicator will be suppressed if the Source's user interface is inactive.
+        /// The Source will continue to display device-specific instructions and error messages even with the Source user interface and progress indicators turned off. 
+        /// </summary>
+        /// <value><c>true</c> if [show progress dialog]; otherwise, <c>false</c>.</value>
+        
+        public bool ShowProgressDialog
+        {
+            get { return _showProgresDialog; }
+            set
+            {
+                if (value != _showProgresDialog)
+                {
+                    _showProgresDialog = value;
+                    OnPropertyChanged("ShowProgressDialogUI");
+                }
+            }
+        }
+
         bool _useDocumentFeeder;
 
         /// <summary>
@@ -146,6 +169,26 @@ namespace TwainDotNet
             }
         }
 
+        RotationSettings _rotation;
+
+        /// <summary>
+        /// Gets or sets the rotation.
+        /// </summary>
+        /// <value>The rotation.</value>
+        public RotationSettings Rotation
+        {
+            get { return _rotation; }
+            set
+            {
+                if (value != _rotation)
+                {
+                    _rotation = value;
+                    OnPropertyChanged("Rotation");
+                }
+            }
+        }
+
+
         #region INotifyPropertyChanged Members
 
         protected void OnPropertyChanged(string propertyName)
@@ -163,7 +206,8 @@ namespace TwainDotNet
         public static readonly ScanSettings Default = new ScanSettings()
         {
             Resolution = ResolutionSettings.ColourPhotocopier,
-            Page = PageSettings.Default
+            Page = PageSettings.Default,
+            Rotation = new RotationSettings()
         };        
 
         /// <summary>
