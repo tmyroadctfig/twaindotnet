@@ -46,6 +46,7 @@ namespace TwainDotNet
                 }
 
                 Capability.SetCapability(Capabilities.AutoFeed, true, _applicationId, SourceId);
+                Capability.SetCapability(Capabilities.AutoScan, true, _applicationId, SourceId);
             }
         }
 
@@ -117,22 +118,16 @@ namespace TwainDotNet
             if (scanSettings.UseDuplex)
             {
                 var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
-                if ((Duplex)cap.GetBasicValue().Int16Value == Duplex.None)
+                Duplex duplex = (Duplex)cap.GetBasicValue().Int16Value;
+
+                if (((Duplex)cap.GetBasicValue().Int16Value) != Duplex.None)
                 {
-                    Capability.SetCapability(Capabilities.DuplexEnabled, (short)Duplex.OnePass, _applicationId, SourceId);
+                    duplex = scanSettings.UseDuplex ? Duplex.OnePass : Duplex.None;
+                    Capability.SetCapability(Capabilities.DuplexEnabled, (short)duplex, _applicationId, SourceId);
                     return true;
                 }
             }
             return false;
-        }
-
-        public void NegotiatePageSize(ScanSettings scanSettings)
-        {
-            var cap = new Capability(Capabilities.Supportedsizes, TwainType.Int16, _applicationId, SourceId);
-            if ((PageType)cap.GetBasicValue().Int16Value != PageType.UsLetter)
-            {
-                Capability.SetBasicCapability(Capabilities.Supportedsizes, (ushort) scanSettings.Page.Size, TwainType.UInt16, _applicationId, SourceId);
-            }
         }
 
         public void NegotiateOrientation(ScanSettings scanSettings)
@@ -145,14 +140,60 @@ namespace TwainDotNet
             }
         }
 
+        /// <summary>
+        /// Negotiates the size of the page.
+        /// </summary>
+        /// <param name="scanSettings">The scan settings.</param>
+        public void NegotiatePageSize(ScanSettings scanSettings)
+        {
+            var cap = new Capability(Capabilities.Supportedsizes, TwainType.Int16, _applicationId, SourceId);
+            if ((PageType)cap.GetBasicValue().Int16Value != PageType.UsLetter)
+            {
+                Capability.SetBasicCapability(Capabilities.Supportedsizes, (ushort)scanSettings.Page.Size, TwainType.UInt16, _applicationId, SourceId);
+            }
+        }
+
+        /// <summary>
+        /// Negotiates the automatic rotation capability.
+        /// </summary>
+        /// <param name="scanSettings">The scan settings.</param>
+        public void NegotiateAutomaticRotate(ScanSettings scanSettings)
+        {
+            RotationSettings rotationSettings = scanSettings.Rotation;
+            Capability.SetCapability(Capabilities.Automaticrotate, rotationSettings.AutomaticRotate, _applicationId, SourceId);
+         }
+
+        /// <summary>
+        /// Negotiates the automatic border detection capability.
+        /// </summary>
+        /// <param name="scanSettings">The scan settings.</param>
+        public void NegotiateAutomaticBorderDetection(ScanSettings scanSettings)
+        {
+            RotationSettings rotationSettings = scanSettings.Rotation;
+            Capability.SetCapability(Capabilities.Automaticborderdetection, rotationSettings.AutomaticBorderDetection, _applicationId, SourceId);
+        }
+
+        /// <summary>
+        /// Negotiates the indicator.
+        /// </summary>
+        /// <param name="scanSettings">The scan settings.</param>
+        public void NegotiateProgressIndicator(ScanSettings scanSettings)
+        {
+            Capability.SetCapability(Capabilities.Indicators, scanSettings.ShowProgressIndicatorUI, _applicationId, SourceId);
+        }
+
         public bool Open(ScanSettings settings)
         {
             OpenSource();
+
+            // Set whether or not to show progress window
+            NegotiateProgressIndicator(settings);
             NegotiateTransferCount(settings);
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
-
-            if (settings.UseDocumentFeeder && settings.Page != null)
+            
+            if (settings.UseDocumentFeeder 
+                && settings.Page != null)
             {
                 NegotiatePageSize(settings);
                 NegotiateOrientation(settings);
@@ -167,6 +208,13 @@ namespace TwainDotNet
             if (settings.Area != null)
             {
                 NegotiateArea(settings);
+            }
+
+            // Configure automatic rotation and image border detection
+            if (settings.Rotation != null)
+            {
+                NegotiateAutomaticRotate(settings);
+                NegotiateAutomaticBorderDetection(settings);
             }
 
             return Enable(settings);

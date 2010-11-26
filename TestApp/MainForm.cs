@@ -55,10 +55,17 @@ namespace TestApp
             {
                 UseDocumentFeeder = useAdfCheckBox.Checked,
                 ShowTwainUI = useUICheckBox.Checked,
+                ShowProgressIndicatorUI = showProgressIndicatorUICheckBox.Checked,
+                UseDuplex = useDuplexCheckBox.Checked,
                 Resolution =
                     blackAndWhiteCheckBox.Checked
                     ? ResolutionSettings.Fax : ResolutionSettings.ColourPhotocopier,
-                Area = !checkBoxArea.Checked ? null : AreaSettings
+                Area = !checkBoxArea.Checked ? null : AreaSettings,
+                Rotation = new RotationSettings
+                {
+                    AutomaticRotate = autoRotateCheckBox.Checked,
+                    AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
+                }
             };
 
             try

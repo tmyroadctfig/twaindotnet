@@ -30,25 +30,24 @@ namespace TwainDotNet
             }
         }
 
-        bool _showProgresDialog;
+        bool _showProgressIndicatorUI;
 
         /// <summary>
-        /// Gets or sets a value indicating whether [show progress dialog].
+        /// Gets or sets a value indicating whether [show progress indicator ui].
         /// If TRUE, the Source will display a progress indicator during acquisition and transfer, regardless of whether the Source's user interface is active. 
         /// If FALSE, the progress indicator will be suppressed if the Source's user interface is inactive.
         /// The Source will continue to display device-specific instructions and error messages even with the Source user interface and progress indicators turned off. 
         /// </summary>
-        /// <value><c>true</c> if [show progress dialog]; otherwise, <c>false</c>.</value>
-        
-        public bool ShowProgressDialog
+        /// <value><c>true</c> if [show progress indicator ui]; otherwise, <c>false</c>.</value>
+        public bool ShowProgressIndicatorUI
         {
-            get { return _showProgresDialog; }
+            get { return _showProgressIndicatorUI; }
             set
             {
-                if (value != _showProgresDialog)
+                if (value != _showProgressIndicatorUI)
                 {
-                    _showProgresDialog = value;
-                    OnPropertyChanged("ShowProgressDialogUI");
+                    _showProgressIndicatorUI = value;
+                    OnPropertyChanged("ShowProgressIndicatorUI");
                 }
             }
         }
