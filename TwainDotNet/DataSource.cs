@@ -118,12 +118,10 @@ namespace TwainDotNet
             if (scanSettings.UseDuplex)
             {
                 var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
-                Duplex duplex = (Duplex)cap.GetBasicValue().Int16Value;
 
                 if (((Duplex)cap.GetBasicValue().Int16Value) != Duplex.None)
                 {
-                    duplex = scanSettings.UseDuplex ? Duplex.OnePass : Duplex.None;
-                    Capability.SetCapability(Capabilities.DuplexEnabled, (short)duplex, _applicationId, SourceId);
+                    Capability.SetCapability(Capabilities.DuplexEnabled, true, _applicationId, SourceId);
                     return true;
                 }
             }
