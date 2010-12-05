@@ -241,7 +241,10 @@ namespace TwainDotNet
                     {
                         using (var renderer = new BitmapRenderer(hbitmap))
                         {
-                            TransferImage(this, new TransferImageEventArgs(renderer.RenderToBitmap()));
+                            TransferImageEventArgs args = new TransferImageEventArgs(renderer.RenderToBitmap(), pendingTransfer.Count != 0);
+                            TransferImage(this, args);
+                            if (!args.ContinueScanning)
+                                break;
                         }
                     }
                 }
