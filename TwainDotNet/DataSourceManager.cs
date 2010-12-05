@@ -66,7 +66,7 @@ namespace TwainDotNet
         /// <summary>
         /// Notification that the scanning has completed.
         /// </summary>
-        public event EventHandler ScanningComplete;
+        public event EventHandler<ScanningCompleteEventArgs> ScanningComplete;
 
         public event EventHandler<TransferImageEventArgs> TransferImage;
 
@@ -136,12 +136,21 @@ namespace TwainDotNet
             switch (_eventMessage.Message)
             {
                 case Message.XFerReady:
-                    TransferPictures();
-
-                    EndingScan();
-                    DataSource.Close();
-
-                    ScanningComplete(this, EventArgs.Empty);
+                    Exception exception = null;
+                    try
+                    {
+                        TransferPictures();
+                    }
+                    catch (Exception e)
+                    {
+                        exception = e;
+                    }
+                    finally
+                    {
+                        EndingScan();
+                        DataSource.Close();
+                    }
+                    ScanningComplete(this, new ScanningCompleteEventArgs(exception));
                     break;
 
                 case Message.CloseDS:

@@ -19,9 +19,9 @@ namespace TwainDotNet
             TransferImage += delegate { };
 
             _dataSourceManager = new DataSourceManager(DataSourceManager.DefaultApplicationId, messageHook);
-            _dataSourceManager.ScanningComplete += delegate
+            _dataSourceManager.ScanningComplete += delegate(object sender, ScanningCompleteEventArgs args)
             {
-                ScanningComplete(this, EventArgs.Empty);
+                ScanningComplete(this, args);
             };
             _dataSourceManager.TransferImage += delegate(object sender, TransferImageEventArgs args)
             {
@@ -32,7 +32,7 @@ namespace TwainDotNet
         /// <summary>
         /// Notification that the scanning has completed.
         /// </summary>
-        public event EventHandler ScanningComplete;
+        public event EventHandler<ScanningCompleteEventArgs> ScanningComplete;
 
         public event EventHandler<TransferImageEventArgs> TransferImage;
 
