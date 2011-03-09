@@ -145,25 +145,19 @@ namespace TwainDotNet
                     {
                         exception = e;
                     }
-                    finally
-                    {
-                        EndingScan();
-                        DataSource.Close();
-                    }
-                    ScanningComplete(this, new ScanningCompleteEventArgs(exception));
+                    CloseDsAndCompleteScanning(exception);
                     break;
 
                 case Message.CloseDS:
-                    EndingScan();
-                    DataSource.Close();
-                    break;
-
                 case Message.CloseDSOK:
-                    EndingScan();
-                    DataSource.Close();
+                case Message.CloseDSReq:
+                    CloseDsAndCompleteScanning(null);
                     break;
 
                 case Message.DeviceEvent:
+                    break;
+
+                default:
                     break;
             }
 
@@ -260,6 +254,19 @@ namespace TwainDotNet
                     DataArgumentType.PendingXfers,
                     Message.Reset,
                     pendingTransfer);
+            }
+        }
+
+        protected void CloseDsAndCompleteScanning(Exception exception)
+        {
+            EndingScan();
+            DataSource.Close();
+            try
+            {
+                ScanningComplete(this, new ScanningCompleteEventArgs(exception));
+            }
+            catch
+            {
             }
         }
 
