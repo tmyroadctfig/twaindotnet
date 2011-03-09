@@ -35,18 +35,17 @@ namespace TwainDotNet
 
         public void NegotiateFeeder(ScanSettings scanSettings)
         {
-            if (scanSettings.UseDocumentFeeder)
+            if (scanSettings.UseDocumentFeeder.HasValue)
             {
-                // Enable the document feeder
-                Capability.SetCapability(Capabilities.FeederEnabled, true, _applicationId, SourceId);
-
-                if (!Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId))
-                {
-                    throw new FeederEmptyException();
-                }
-
-                Capability.SetCapability(Capabilities.AutoFeed, true, _applicationId, SourceId);
-                Capability.SetCapability(Capabilities.AutoScan, true, _applicationId, SourceId);
+                Capability.SetCapability(Capabilities.FeederEnabled, scanSettings.UseDocumentFeeder.Value, _applicationId, SourceId);
+            }
+            if (scanSettings.UseAutoFeeder.HasValue)
+            {
+                Capability.SetCapability(Capabilities.AutoFeed, scanSettings.UseAutoFeeder == true && scanSettings.UseDocumentFeeder == true, _applicationId, SourceId);
+            }
+            if (scanSettings.UseAutoScanCache.HasValue)
+            {
+                Capability.SetCapability(Capabilities.AutoScan, scanSettings.UseAutoScanCache.Value, _applicationId, SourceId);
             }
         }
 
@@ -92,6 +91,15 @@ namespace TwainDotNet
             }
         }
 
+        public bool SupportsDuplex
+        {
+            get
+            {
+                var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
+                return ((Duplex)cap.GetBasicValue().Int16Value) != Duplex.None;
+            }
+        }
+
         public void NegotiateColour(ScanSettings scanSettings)
         {
             Capability.SetBasicCapability(Capabilities.IPixelType, (ushort)GetPixelType(scanSettings), TwainType.UInt16, _applicationId, SourceId);
@@ -113,19 +121,12 @@ namespace TwainDotNet
             }
         }
 
-        public bool NegotiateDuplex(ScanSettings scanSettings)
+        public void NegotiateDuplex(ScanSettings scanSettings)
         {
-            if (scanSettings.UseDuplex)
+            if (scanSettings.UseDuplex.HasValue && SupportsDuplex)
             {
-                var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
-
-                if (((Duplex)cap.GetBasicValue().Int16Value) != Duplex.None)
-                {
-                    Capability.SetCapability(Capabilities.DuplexEnabled, true, _applicationId, SourceId);
-                    return true;
-                }
+                Capability.SetCapability(Capabilities.DuplexEnabled, scanSettings.UseDuplex.Value, _applicationId, SourceId);
             }
-            return false;
         }
 
         public void NegotiateOrientation(ScanSettings scanSettings)
@@ -159,7 +160,7 @@ namespace TwainDotNet
         {
             RotationSettings rotationSettings = scanSettings.Rotation;
             Capability.SetCapability(Capabilities.Automaticrotate, rotationSettings.AutomaticRotate, _applicationId, SourceId);
-         }
+        }
 
         /// <summary>
         /// Negotiates the automatic border detection capability.
@@ -177,21 +178,27 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiateProgressIndicator(ScanSettings scanSettings)
         {
-            Capability.SetCapability(Capabilities.Indicators, scanSettings.ShowProgressIndicatorUI, _applicationId, SourceId);
+            if (scanSettings.ShowProgressIndicatorUI.HasValue)
+            {
+                Capability.SetCapability(Capabilities.Indicators, scanSettings.ShowProgressIndicatorUI.Value, _applicationId, SourceId);
+            }
         }
 
         public bool Open(ScanSettings settings)
         {
             OpenSource();
 
+            if (settings.AbortWhenNoPaperDetectable && !PaperDetectable)
+                throw new FeederEmptyException();
+
             // Set whether or not to show progress window
             NegotiateProgressIndicator(settings);
             NegotiateTransferCount(settings);
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
-            
-            if (settings.UseDocumentFeeder 
-                && settings.Page != null)
+
+            if (settings.UseDocumentFeeder == true &&
+                settings.Page != null)
             {
                 NegotiatePageSize(settings);
                 NegotiateOrientation(settings);
@@ -233,7 +240,7 @@ namespace TwainDotNet
                 Capability.SetCapability(Capabilities.IUnits, (short)area.Units, _applicationId, SourceId);
             }
 
-            var imageLayout = new ImageLayout 
+            var imageLayout = new ImageLayout
             {
                 Frame = new Frame
                 {
@@ -241,7 +248,7 @@ namespace TwainDotNet
                     Top = new Fix32(area.Top),
                     Right = new Fix32(area.Right),
                     Bottom = new Fix32(area.Bottom)
-                } 
+                }
             };
 
             var result = Twain32Native.DsImageLayout(

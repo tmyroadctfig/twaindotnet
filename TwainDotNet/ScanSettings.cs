@@ -9,7 +9,7 @@ namespace TwainDotNet
     {
         public ScanSettings()
         {
-            ShouldTransferAllPages = true;            
+            ShouldTransferAllPages = true;
         }
 
         bool _showTwainUI;
@@ -30,7 +30,7 @@ namespace TwainDotNet
             }
         }
 
-        bool _showProgressIndicatorUI;
+        bool? _showProgressIndicatorUI;
 
         /// <summary>
         /// Gets or sets a value indicating whether [show progress indicator ui].
@@ -39,7 +39,7 @@ namespace TwainDotNet
         /// The Source will continue to display device-specific instructions and error messages even with the Source user interface and progress indicators turned off. 
         /// </summary>
         /// <value><c>true</c> if [show progress indicator ui]; otherwise, <c>false</c>.</value>
-        public bool ShowProgressIndicatorUI
+        public bool? ShowProgressIndicatorUI
         {
             get { return _showProgressIndicatorUI; }
             set
@@ -52,12 +52,12 @@ namespace TwainDotNet
             }
         }
 
-        bool _useDocumentFeeder;
+        bool? _useDocumentFeeder;
 
         /// <summary>
         /// Indicates if the automatic document feeder (ADF) should be the source of the document(s) to scan.
         /// </summary>
-        public bool UseDocumentFeeder
+        public bool? UseDocumentFeeder
         {
             get { return _useDocumentFeeder; }
             set
@@ -66,6 +66,61 @@ namespace TwainDotNet
                 {
                     _useDocumentFeeder = value;
                     OnPropertyChanged("UseDocumentFeeder");
+                }
+            }
+        }
+
+        bool? _useAutoFeeder;
+
+        /// <summary>
+        /// Indicates if the automatic document feeder (ADF) should continue feeding document(s) to scan after the negotiated number of pages are acquired.
+        /// UseDocumentFeeder must be true
+        /// </summary>
+        public bool? UseAutoFeeder
+        {
+            get { return _useAutoFeeder; }
+            set
+            {
+                if (value != _useAutoFeeder)
+                {
+                    _useAutoFeeder = value;
+                    OnPropertyChanged("UseAutoFeeder");
+                }
+            }
+        }
+
+        bool? _useAutoScanCache;
+
+        /// <summary>
+        /// Indicates if the source should continue scanning without waiting for the application to request the image transfers.
+        /// </summary>
+        public bool? UseAutoScanCache
+        {
+            get { return _useAutoScanCache; }
+            set
+            {
+                if (value != _useAutoScanCache)
+                {
+                    _useAutoScanCache = value;
+                    OnPropertyChanged("UseAutoScanCache");
+                }
+            }
+        }
+
+        bool _abortWhenNoPaperDetectable;
+
+        /// <summary>
+        /// Indicates if the transfer should not start when no paper was detected (e.g. by the ADF).
+        /// </summary>
+        public bool AbortWhenNoPaperDetectable
+        {
+            get { return _abortWhenNoPaperDetectable; }
+            set
+            {
+                if (value != _abortWhenNoPaperDetectable)
+                {
+                    _abortWhenNoPaperDetectable = value;
+                    OnPropertyChanged("AbortWhenNoPaperDetectable");
                 }
             }
         }
@@ -95,7 +150,7 @@ namespace TwainDotNet
         public bool ShouldTransferAllPages
         {
             get { return _transferCount == TransferAllPages; }
-            set { TransferCount = value ? TransferAllPages : (short) 1; }
+            set { TransferCount = value ? TransferAllPages : (short)1; }
         }
 
         ResolutionSettings _resolution;
@@ -116,12 +171,12 @@ namespace TwainDotNet
             }
         }
 
-        bool _useDuplex;
+        bool? _useDuplex;
 
         /// <summary>
         /// Whether to use duplexing, if supported.
         /// </summary>
-        public bool UseDuplex
+        public bool? UseDuplex
         {
             get { return _useDuplex; }
             set
@@ -135,7 +190,7 @@ namespace TwainDotNet
         }
 
         AreaSettings _area;
-        
+
         public AreaSettings Area
         {
             get { return _area; }
@@ -145,7 +200,7 @@ namespace TwainDotNet
                 {
                     _area = value;
                     OnPropertyChanged("Area");
-                }                
+                }
             }
         }
 
@@ -155,7 +210,7 @@ namespace TwainDotNet
         /// The page / paper settings. Set null to use current defaults.
         /// </summary>
         /// <value>The page.</value>
-        public PageSettings Page 
+        public PageSettings Page
         {
             get { return _page; }
             set
@@ -207,7 +262,7 @@ namespace TwainDotNet
             Resolution = ResolutionSettings.ColourPhotocopier,
             Page = PageSettings.Default,
             Rotation = new RotationSettings()
-        };        
+        };
 
         /// <summary>
         /// The value to set to scan all available pages.
