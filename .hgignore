@@ -10,3 +10,8 @@ glob:TwainDotNet.WinFroms/bin/
 glob:TwainDotNet.WinFroms/obj/
 glob:TwainDotNet.Wpf/bin/
 glob:TwainDotNet.Wpf/obj/
+syntax: glob
+TestVb/bin/
+TestVb/obj
+TestVb.suo
+TestVb/TestVb.vbproj.user
