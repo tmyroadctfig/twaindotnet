@@ -39,8 +39,8 @@ Public Class MainForm
 
                     images.Add(args.Image)
 
-                    widthLabel.Text = "Width: " + pictureBox1.Image.Width
-                    heightLabel.Text = "Height: " + pictureBox1.Image.Height
+                    widthLabel.Text = String.Format("Width: {0}", pictureBox1.Image.Width)
+                    heightLabel.Text = String.Format("Height: {0}", pictureBox1.Image.Height)
                 End If
             End Sub
 
@@ -71,11 +71,15 @@ Public Class MainForm
         settings.UseDuplex = useDuplexCheckBox.Checked
         settings.Resolution = If(blackAndWhiteCheckBox.Checked, ResolutionSettings.Fax, ResolutionSettings.ColourPhotocopier)
         settings.Area = If(Not checkBoxArea.Checked, Nothing, areaSettings)
-        settings.Rotation = New RotationSettings With
-        {
-            .AutomaticRotate = autoRotateCheckBox.Checked,
-            .AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
-        }
+        settings.ShouldTransferAllPages = True
+
+        If (autoRotateCheckBox.Checked Or autoDetectBorderCheckBox.Checked) Then
+            settings.Rotation = New RotationSettings With
+            {
+                .AutomaticRotate = autoRotateCheckBox.Checked,
+                .AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
+            }
+        End If
 
         Try
             ' Start scanning. Depending on the settings above dialogs from the scanner driver may be displayed.
