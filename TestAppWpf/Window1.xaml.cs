@@ -38,11 +38,13 @@ namespace TestAppWpf
                 {
                     if (args.Image != null)
                     {
+                        IntPtr hbitmap = new System.Drawing.Bitmap(args.Image).GetHbitmap();
                         image1.Source = Imaging.CreateBitmapSourceFromHBitmap(
-                                new System.Drawing.Bitmap(args.Image).GetHbitmap(),
+                                hbitmap,
                                 IntPtr.Zero,
                                 Int32Rect.Empty,
                                 BitmapSizeOptions.FromEmptyOptions());
+                        Gdi32Native.DeleteObject(hbitmap);
                     }
                 };
                 _twain.ScanningComplete += delegate
