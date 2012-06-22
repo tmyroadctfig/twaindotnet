@@ -16,6 +16,7 @@ using System.Windows.Interop;
 using Microsoft.Win32;
 using TwainDotNet.Wpf;
 using System.IO;
+using TwainDotNet.Win32;
 
 namespace TestAppWpf
 {
