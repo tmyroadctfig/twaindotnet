@@ -73,13 +73,11 @@ Public Class MainForm
         settings.Area = If(Not checkBoxArea.Checked, Nothing, areaSettings)
         settings.ShouldTransferAllPages = True
 
-        If (autoRotateCheckBox.Checked Or autoDetectBorderCheckBox.Checked) Then
-            settings.Rotation = New RotationSettings With
-            {
-                .AutomaticRotate = autoRotateCheckBox.Checked,
-                .AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
-            }
-        End If
+        settings.Rotation = New RotationSettings With
+        {
+            .AutomaticRotate = autoRotateCheckBox.Checked,
+            .AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
+        }
 
         Try
             ' Start scanning. Depending on the settings above dialogs from the scanner driver may be displayed.

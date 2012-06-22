@@ -158,8 +158,8 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiateAutomaticRotate(ScanSettings scanSettings)
         {
-            RotationSettings rotationSettings = scanSettings.Rotation;
-            Capability.SetCapability(Capabilities.Automaticrotate, rotationSettings.AutomaticRotate, _applicationId, SourceId);
+            if (scanSettings.Rotation.AutomaticRotate)
+                Capability.SetCapability(Capabilities.Automaticrotate, true, _applicationId, SourceId);
         }
 
         /// <summary>
@@ -168,8 +168,8 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiateAutomaticBorderDetection(ScanSettings scanSettings)
         {
-            RotationSettings rotationSettings = scanSettings.Rotation;
-            Capability.SetCapability(Capabilities.Automaticborderdetection, rotationSettings.AutomaticBorderDetection, _applicationId, SourceId);
+            if (scanSettings.Rotation.AutomaticBorderDetection)
+                Capability.SetCapability(Capabilities.Automaticborderdetection, true, _applicationId, SourceId);
         }
 
         /// <summary>

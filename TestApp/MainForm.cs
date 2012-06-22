@@ -51,21 +51,21 @@ namespace TestApp
         {
             Enabled = false;
 
-            _settings = new ScanSettings
+            _settings = new ScanSettings();
+            _settings.UseDocumentFeeder = useAdfCheckBox.Checked;
+            _settings.ShowTwainUI = useUICheckBox.Checked;
+            _settings.ShowProgressIndicatorUI = showProgressIndicatorUICheckBox.Checked;
+            _settings.UseDuplex = useDuplexCheckBox.Checked;
+            _settings.Resolution =
+                blackAndWhiteCheckBox.Checked
+                ? ResolutionSettings.Fax : ResolutionSettings.ColourPhotocopier;
+            _settings.Area = !checkBoxArea.Checked ? null : AreaSettings;
+            _settings.ShouldTransferAllPages = true;
+
+            _settings.Rotation = new RotationSettings()
             {
-                UseDocumentFeeder = useAdfCheckBox.Checked,
-                ShowTwainUI = useUICheckBox.Checked,
-                ShowProgressIndicatorUI = showProgressIndicatorUICheckBox.Checked,
-                UseDuplex = useDuplexCheckBox.Checked,
-                Resolution =
-                    blackAndWhiteCheckBox.Checked
-                    ? ResolutionSettings.Fax : ResolutionSettings.ColourPhotocopier,
-                Area = !checkBoxArea.Checked ? null : AreaSettings,
-                Rotation = new RotationSettings
-                {
-                    AutomaticRotate = autoRotateCheckBox.Checked,
-                    AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
-                }
+                AutomaticRotate = autoRotateCheckBox.Checked,
+                AutomaticBorderDetection = autoDetectBorderCheckBox.Checked
             };
 
             try
