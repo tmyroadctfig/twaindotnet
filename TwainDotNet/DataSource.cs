@@ -159,7 +159,9 @@ namespace TwainDotNet
         public void NegotiateAutomaticRotate(ScanSettings scanSettings)
         {
             if (scanSettings.Rotation.AutomaticRotate)
+            {
                 Capability.SetCapability(Capabilities.Automaticrotate, true, _applicationId, SourceId);
+            }
         }
 
         /// <summary>
@@ -169,7 +171,9 @@ namespace TwainDotNet
         public void NegotiateAutomaticBorderDetection(ScanSettings scanSettings)
         {
             if (scanSettings.Rotation.AutomaticBorderDetection)
+            {
                 Capability.SetCapability(Capabilities.Automaticborderdetection, true, _applicationId, SourceId);
+            }
         }
 
         /// <summary>
