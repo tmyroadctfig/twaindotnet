@@ -60,12 +60,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="TwainDotNet">
-      <HintPath>..\TwainDotNet\bin\Debug\TwainDotNet.dll</HintPath>
-    </Reference>
-    <Reference Include="TwainDotNet.WinFroms">
-      <HintPath>..\TwainDotNet.WinFroms\bin\Debug\TwainDotNet.WinFroms.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -124,6 +118,16 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TwainDotNet.WinFroms\TwainDotNet.WinFroms.csproj">
+      <Project>{715EED8D-94FE-40ED-B3F7-59284FA6242B}</Project>
+      <Name>TwainDotNet.WinFroms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwainDotNet\TwainDotNet.csproj">
+      <Project>{857B8891-2932-484D-A9A8-D38B47108CF0}</Project>
+      <Name>TwainDotNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
