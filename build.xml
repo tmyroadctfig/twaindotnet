@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Package" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<SourceDir>src</SourceDir>
 		<BuildDir>bin</BuildDir>
@@ -25,6 +25,17 @@
 			<binaries Include="$(SourceDir)\**\bin\Release\*.*"/>
 		</ItemGroup>
 		<Copy SourceFiles="@(binaries)" DestinationFolder="$(BuildDir)"/>
+	</Target>
+	
+	<Target Name="Package" DependsOnTargets="Build">
+		<MakeDir Directories='$(ReleaseDir)'/>
+		<!-- haven't been able to prevent NuGet from self updating -->
+		<!-- so let's get the self update out of the way -->
+		<Exec Command='$(ToolsDir)\NuGet.exe update -self'/>
+		
+		<Exec Command='$(ToolsDir)\NuGet.exe pack "$(SourceDir)\TwainDotNet\TwainDotNet.csproj" -properties Configuration="Release" -o "$(ReleaseDir)"'/>
+		<Exec Command='$(ToolsDir)\NuGet.exe pack "$(SourceDir)\TwainDotNet.WinFroms\TwainDotNet.WinFroms.csproj" -properties Configuration="Release" -o "$(ReleaseDir)"'/>
+		<Exec Command='$(ToolsDir)\NuGet.exe pack "$(SourceDir)\TwainDotNet.Wpf\TwainDotNet.Wpf.csproj" -properties Configuration="Release" -o "$(ReleaseDir)"'/>
 	</Target>
 	
 </Project>

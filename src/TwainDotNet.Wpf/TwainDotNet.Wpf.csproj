@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\TwainDotNet\TwainDotNet.snk" />
+    <None Include="TwainDotNet.Wpf.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
