@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<SourceDir>src</SourceDir>
+		<BuildDir>bin</BuildDir>
+		<ReleaseDir>release</ReleaseDir>
+		<ToolsDir>tools</ToolsDir>
+	</PropertyGroup>
+	
+	<Target Name="Clean">
+		<ItemGroup><Solutions Include='$(SourceDir)\*.sln'/></ItemGroup>
+		<RemoveDir Directories="$(BuildDir)"/>
+		<RemoveDir Directories="$(ReleaseDir)"/>
+		<MSBuild Projects="@(Solutions)"
+			Targets="Clean"
+			Properties="Configuration=Release"/>
+	</Target>
+	
+	<Target Name="Build" DependsOnTargets="Clean">
+		<ItemGroup><Solutions Include='$(SourceDir)\*.sln'/></ItemGroup>
+		<MSBuild Projects="@(Solutions)"
+			Targets="Rebuild"
+			Properties="Configuration=Release"/>
+		<ItemGroup>
+			<binaries Include="$(SourceDir)\**\bin\Release\*.*"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(binaries)" DestinationFolder="$(BuildDir)"/>
+	</Target>
+	
+</Project>
