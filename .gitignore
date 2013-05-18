@@ -1,0 +1,16 @@
+TwainDotNet.suo
+TestApp/bin/
+TestApp/obj/
+TwainDotNet/bin/
+TwainDotNet/obj/
+TwainDotNet/TwainDotNet.csproj.user
+TestAppWpf/bin/
+TestAppWpf/obj/
+TwainDotNet.WinFroms/bin/
+TwainDotNet.WinFroms/obj/
+TwainDotNet.Wpf/bin/
+TwainDotNet.Wpf/obj/
+TestVb/bin/
+TestVb/obj
+TestVb.suo
+TestVb/TestVb.vbproj.user
