@@ -4,7 +4,7 @@ This project is based off the code from Thomas Scheidegger's excellent article o
 
 
 ## twaindotnet Features
-  * [BSD style licence](License.txt)
+  * [MIT style licence](License.txt)
   * Supports both WPF and WinForms applications.
 
 ### Page Related
