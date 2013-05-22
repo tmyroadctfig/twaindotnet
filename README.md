@@ -37,6 +37,7 @@ This project is based off the code from Thomas Scheidegger's excellent article o
 ### Canon
    * Canon !CanoScan FB636U
    * Canon !CanoScan 8000F
+   * Canon PIXMA MP280
 
 ### Epson
    * Epson Stylus Office TX300F
