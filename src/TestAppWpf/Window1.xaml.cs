@@ -1,32 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using TwainDotNet;
 using System.Windows.Interop;
 using Microsoft.Win32;
+using TwainDotNet;
+using TwainDotNet.TwainNative;
 using TwainDotNet.Wpf;
-using System.IO;
 using TwainDotNet.Win32;
 
 namespace TestAppWpf
 {
-    /// <summary>
-    /// Interaction logic for Window1.xaml
-    /// </summary>
     public partial class Window1 : Window
     {
-        Twain _twain;
-        ScanSettings _settings;
+        private static AreaSettings AreaSettings = new AreaSettings(Units.Centimeters, 0.1f, 5.7f, 0.1F + 2.6f, 5.7f + 2.6f);
+
+        private Twain _twain;
+        private ScanSettings _settings;
+
+        private Bitmap resultImage;
 
         public Window1()
         {
@@ -39,8 +32,9 @@ namespace TestAppWpf
                 {
                     if (args.Image != null)
                     {
-                        IntPtr hbitmap = new System.Drawing.Bitmap(args.Image).GetHbitmap();
-                        image1.Source = Imaging.CreateBitmapSourceFromHBitmap(
+                        resultImage = args.Image;
+                        IntPtr hbitmap = new Bitmap(args.Image).GetHbitmap();
+                        MainImage.Source = Imaging.CreateBitmapSourceFromHBitmap(
                                 hbitmap,
                                 IntPtr.Zero,
                                 Int32Rect.Empty,
@@ -57,13 +51,11 @@ namespace TestAppWpf
                 ManualSource.ItemsSource = sourceList;
 
                 if (sourceList != null && sourceList.Count > 0)
-                {
                     ManualSource.SelectedItem = sourceList[0];
-                }
             };
         }
 
-        private void selectSourceButton_Click(object sender, RoutedEventArgs e)
+        private void OnSelectSourceButtonClick(object sender, RoutedEventArgs e)
         {
             _twain.SelectSource();
         }
@@ -72,19 +64,28 @@ namespace TestAppWpf
         {
             IsEnabled = false;
 
-            _settings = new ScanSettings()
-            {
-                UseDocumentFeeder = useAdfCheckBox.IsChecked == true,
-                ShowTwainUI = useTwainUICheckBox.IsChecked == true
-            };
+            _settings = new ScanSettings
+                {
+                    UseDocumentFeeder = UseAdfCheckBox.IsChecked,
+                    ShowTwainUI = UseUICheckBox.IsChecked ?? false,
+                    ShowProgressIndicatorUI = ShowProgressCheckBox.IsChecked,
+                    UseDuplex = UseDuplexCheckBox.IsChecked,
+                    Resolution = (BlackAndWhiteCheckBox.IsChecked ?? false)
+                                     ? ResolutionSettings.Fax
+                                     : ResolutionSettings.ColourPhotocopier,
+                    Area = !(GrabAreaCheckBox.IsChecked ?? false) ? null : AreaSettings,
+                    ShouldTransferAllPages = true,
+                    Rotation = new RotationSettings
+                        {
+                            AutomaticRotate = AutoRotateCheckBox.IsChecked ?? false,
+                            AutomaticBorderDetection = AutoDetectBorderCheckBox.IsChecked ?? false
+                        }
+                };
 
             try
             {
                 if (SourceUserSelected.IsChecked == true)
-                {
                     _twain.SelectSource(ManualSource.SelectedItem.ToString());
-                }
-
                 _twain.StartScanning(_settings);
             }
             catch (TwainException ex)
@@ -95,22 +96,13 @@ namespace TestAppWpf
             IsEnabled = true;
         }
 
-        private void saveButton_Click(object sender, RoutedEventArgs e)
+        private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
-            if (image1.Source != null)
+            if (resultImage != null)
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-
-                if (sfd.ShowDialog() == true)
-                {
-                    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create((BitmapSource)image1.Source));
-
-                    using (FileStream stream = new FileStream(sfd.FileName, FileMode.OpenOrCreate))
-                    {
-                        encoder.Save(stream);
-                    }
-                }
+                var saveFileDialog = new SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == true)
+                    resultImage.Save(saveFileDialog.FileName);
             }
         }
     }
