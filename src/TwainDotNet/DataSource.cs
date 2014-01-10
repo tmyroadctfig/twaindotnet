@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TwainDotNet.TwainNative;
@@ -26,27 +26,59 @@ namespace TwainDotNet
 
         public void NegotiateTransferCount(ScanSettings scanSettings)
         {
-            scanSettings.TransferCount = Capability.SetCapability(
-                Capabilities.XferCount,
-                scanSettings.TransferCount,
-                _applicationId,
-                SourceId);
+            try
+            {
+                scanSettings.TransferCount = Capability.SetCapability(
+                        Capabilities.XferCount,
+                        scanSettings.TransferCount,
+                        _applicationId,
+                        SourceId);
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
+            }
         }
 
         public void NegotiateFeeder(ScanSettings scanSettings)
         {
-            if (scanSettings.UseDocumentFeeder.HasValue)
+
+            try
             {
-                Capability.SetCapability(Capabilities.FeederEnabled, scanSettings.UseDocumentFeeder.Value, _applicationId, SourceId);
+                if (scanSettings.UseDocumentFeeder.HasValue)
+                {
+                    Capability.SetCapability(Capabilities.FeederEnabled, scanSettings.UseDocumentFeeder.Value, _applicationId, SourceId);
+                }
             }
-            if (scanSettings.UseAutoFeeder.HasValue)
+            catch
             {
-                Capability.SetCapability(Capabilities.AutoFeed, scanSettings.UseAutoFeeder == true && scanSettings.UseDocumentFeeder == true, _applicationId, SourceId);
+                // Do nothing if the data source does not support the requested capability
             }
-            if (scanSettings.UseAutoScanCache.HasValue)
+
+            try
             {
-                Capability.SetCapability(Capabilities.AutoScan, scanSettings.UseAutoScanCache.Value, _applicationId, SourceId);
+                if (scanSettings.UseAutoFeeder.HasValue)
+                {
+                    Capability.SetCapability(Capabilities.AutoFeed, scanSettings.UseAutoFeeder == true && scanSettings.UseDocumentFeeder == true, _applicationId, SourceId);
+                }
             }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
+            }
+
+            try
+            {
+                if (scanSettings.UseAutoScanCache.HasValue)
+                {
+                    Capability.SetCapability(Capabilities.AutoScan, scanSettings.UseAutoScanCache.Value, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
+            }
+
         }
 
         public PixelType GetPixelType(ScanSettings scanSettings)
@@ -87,7 +119,14 @@ namespace TwainDotNet
         {
             get
             {
-                return Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId);
+                try
+                {
+                    return Capability.GetBoolCapability(Capabilities.FeederLoaded, _applicationId, SourceId);
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
@@ -95,47 +134,90 @@ namespace TwainDotNet
         {
             get
             {
-                var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
-                return ((Duplex)cap.GetBasicValue().Int16Value) != Duplex.None;
+                try
+                {
+                    var cap = new Capability(Capabilities.Duplex, TwainType.Int16, _applicationId, SourceId);
+                    return ((Duplex)cap.GetBasicValue().Int16Value) != Duplex.None;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
         public void NegotiateColour(ScanSettings scanSettings)
         {
-            Capability.SetBasicCapability(Capabilities.IPixelType, (ushort)GetPixelType(scanSettings), TwainType.UInt16, _applicationId, SourceId);
+            try
+            {
+                Capability.SetBasicCapability(Capabilities.IPixelType, (ushort)GetPixelType(scanSettings), TwainType.UInt16, _applicationId, SourceId);
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
+            }
 
             // TODO: Also set this for colour scanning
-            if (scanSettings.Resolution.ColourSetting != ColourSetting.Colour)
+            try
             {
-                Capability.SetCapability(Capabilities.BitDepth, GetBitDepth(scanSettings), _applicationId, SourceId);
+                if (scanSettings.Resolution.ColourSetting != ColourSetting.Colour)
+                {
+                    Capability.SetCapability(Capabilities.BitDepth, GetBitDepth(scanSettings), _applicationId, SourceId);
+                }
             }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
+            }
+
         }
 
         public void NegotiateResolution(ScanSettings scanSettings)
         {
-            if (scanSettings.Resolution.Dpi.HasValue)
+            try
             {
-                int dpi = scanSettings.Resolution.Dpi.Value;
-                Capability.SetBasicCapability(Capabilities.XResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
-                Capability.SetBasicCapability(Capabilities.YResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
+                if (scanSettings.Resolution.Dpi.HasValue)
+                {
+                    int dpi = scanSettings.Resolution.Dpi.Value;
+                    Capability.SetBasicCapability(Capabilities.XResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
+                    Capability.SetBasicCapability(Capabilities.YResolution, dpi, TwainType.Fix32, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
         public void NegotiateDuplex(ScanSettings scanSettings)
         {
-            if (scanSettings.UseDuplex.HasValue && SupportsDuplex)
+            try
             {
-                Capability.SetCapability(Capabilities.DuplexEnabled, scanSettings.UseDuplex.Value, _applicationId, SourceId);
+                if (scanSettings.UseDuplex.HasValue && SupportsDuplex)
+                {
+                    Capability.SetCapability(Capabilities.DuplexEnabled, scanSettings.UseDuplex.Value, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
         public void NegotiateOrientation(ScanSettings scanSettings)
         {
             // Set orientation (default is portrait)
-            var cap = new Capability(Capabilities.Orientation, TwainType.Int16, _applicationId, SourceId);
-            if ((Orientation)cap.GetBasicValue().Int16Value != Orientation.Default)
+            try
             {
-                Capability.SetBasicCapability(Capabilities.Orientation, (ushort)scanSettings.Page.Orientation, TwainType.UInt16, _applicationId, SourceId);
+                var cap = new Capability(Capabilities.Orientation, TwainType.Int16, _applicationId, SourceId);
+                if ((Orientation)cap.GetBasicValue().Int16Value != Orientation.Default)
+                {
+                    Capability.SetBasicCapability(Capabilities.Orientation, (ushort)scanSettings.Page.Orientation, TwainType.UInt16, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
@@ -145,10 +227,17 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiatePageSize(ScanSettings scanSettings)
         {
-            var cap = new Capability(Capabilities.Supportedsizes, TwainType.Int16, _applicationId, SourceId);
-            if ((PageType)cap.GetBasicValue().Int16Value != PageType.UsLetter)
+            try
             {
-                Capability.SetBasicCapability(Capabilities.Supportedsizes, (ushort)scanSettings.Page.Size, TwainType.UInt16, _applicationId, SourceId);
+                var cap = new Capability(Capabilities.Supportedsizes, TwainType.Int16, _applicationId, SourceId);
+                if ((PageType)cap.GetBasicValue().Int16Value != PageType.UsLetter)
+                {
+                    Capability.SetBasicCapability(Capabilities.Supportedsizes, (ushort)scanSettings.Page.Size, TwainType.UInt16, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
@@ -158,9 +247,16 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiateAutomaticRotate(ScanSettings scanSettings)
         {
-            if (scanSettings.Rotation.AutomaticRotate)
+            try
             {
-                Capability.SetCapability(Capabilities.Automaticrotate, true, _applicationId, SourceId);
+                if (scanSettings.Rotation.AutomaticRotate)
+                {
+                    Capability.SetCapability(Capabilities.Automaticrotate, true, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
@@ -170,9 +266,16 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiateAutomaticBorderDetection(ScanSettings scanSettings)
         {
-            if (scanSettings.Rotation.AutomaticBorderDetection)
+            try
             {
-                Capability.SetCapability(Capabilities.Automaticborderdetection, true, _applicationId, SourceId);
+                if (scanSettings.Rotation.AutomaticBorderDetection)
+                {
+                    Capability.SetCapability(Capabilities.Automaticborderdetection, true, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
@@ -182,9 +285,16 @@ namespace TwainDotNet
         /// <param name="scanSettings">The scan settings.</param>
         public void NegotiateProgressIndicator(ScanSettings scanSettings)
         {
-            if (scanSettings.ShowProgressIndicatorUI.HasValue)
+            try
             {
-                Capability.SetCapability(Capabilities.Indicators, scanSettings.ShowProgressIndicatorUI.Value, _applicationId, SourceId);
+                if (scanSettings.ShowProgressIndicatorUI.HasValue)
+                {
+                    Capability.SetCapability(Capabilities.Indicators, scanSettings.ShowProgressIndicatorUI.Value, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
         }
 
@@ -238,10 +348,17 @@ namespace TwainDotNet
                 return false;
             }
 
-            var cap = new Capability(Capabilities.IUnits, TwainType.Int16, _applicationId, SourceId);
-            if ((Units)cap.GetBasicValue().Int16Value != area.Units)
+            try
             {
-                Capability.SetCapability(Capabilities.IUnits, (short)area.Units, _applicationId, SourceId);
+                var cap = new Capability(Capabilities.IUnits, TwainType.Int16, _applicationId, SourceId);
+                if ((Units)cap.GetBasicValue().Int16Value != area.Units)
+                {
+                    Capability.SetCapability(Capabilities.IUnits, (short)area.Units, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
             }
 
             var imageLayout = new ImageLayout
