@@ -2,6 +2,8 @@
 
 This project is based off the code from Thomas Scheidegger's excellent article on The Code Project: [http://www.codeproject.com/KB/dotnet/twaindotnet.aspx](http://www.codeproject.com/KB/dotnet/twaindotnet.aspx)
 
+Also check out another alternative library: [http://www.nuget.org/packages/NTwain/](NTwain)
+
 
 ## twaindotnet Features
   * [MIT style licence](License.txt)
