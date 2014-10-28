@@ -318,15 +318,15 @@ namespace TwainDotNet
                 NegotiateOrientation(settings);
             }
 
+            if (settings.Area != null)
+            {
+                NegotiateArea(settings);
+            }
+
             if (settings.Resolution != null)
             {
                 NegotiateColour(settings);
                 NegotiateResolution(settings);
-            }
-
-            if (settings.Area != null)
-            {
-                NegotiateArea(settings);
             }
 
             // Configure automatic rotation and image border detection
