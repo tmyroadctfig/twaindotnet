@@ -561,13 +561,16 @@ namespace TwainDotNet
                     Message.DisableDS,
                     userInterface);
 
-                result = Twain32Native.DsmIdentity(
-                    _applicationId,
-                    IntPtr.Zero,
-                    DataGroup.Control,
-                    DataArgumentType.Identity,
-                    Message.CloseDS,
-                    SourceId);
+                if (result != TwainResult.Failure)
+                {
+                    result = Twain32Native.DsmIdentity(
+                        _applicationId,
+                        IntPtr.Zero,
+                        DataGroup.Control,
+                        DataArgumentType.Identity,
+                        Message.CloseDS,
+                        SourceId);
+                }
             }
         }
     }
