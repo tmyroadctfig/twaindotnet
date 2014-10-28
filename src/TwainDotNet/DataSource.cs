@@ -318,6 +318,11 @@ namespace TwainDotNet
                 NegotiateOrientation(settings);
             }
 
+            if (settings.Area != null)
+            {
+                NegotiateArea(settings);
+            }
+
             if (settings.Resolution != null)
             {
                 NegotiateColour(settings);
