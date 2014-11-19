@@ -70,6 +70,24 @@ namespace TwainDotNet
             }
         }
 
+        bool? _useFilmScanner;
+
+        /// <summary>
+        /// Indicates if the transmitted light film SCanner should be used as the light source.
+        /// </summary>
+        public bool? UseFilmScanner
+        {
+            get { return _useFilmScanner; }
+            set
+            {
+                if (value != _useFilmScanner)
+                {
+                    _useFilmScanner = value;
+                    OnPropertyChanged("UseFilmScanner");
+                }
+            }
+        }
+
         bool? _useAutoFeeder;
 
         /// <summary>
