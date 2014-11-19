@@ -70,7 +70,6 @@
     <Compile Include="TwainNative\CapabilityArrayValue.cs" />
     <Compile Include="TwainNative\CapabilityEnumValue.cs" />
     <Compile Include="TwainNative\CapabilityOneValue.cs" />
-    <Compile Include="TwainNative\Lightpath.cs" />
     <Compile Include="TwainNative\Command.cs" />
     <Compile Include="TwainNative\Compression.cs" />
     <Compile Include="TwainNative\ConditionCode.cs" />
