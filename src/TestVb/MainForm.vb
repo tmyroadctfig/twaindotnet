@@ -69,7 +69,6 @@ Public Class MainForm
         settings.ShowTwainUI = useUICheckBox.Checked
         settings.ShowProgressIndicatorUI = showProgressIndicatorUICheckBox.Checked
         settings.UseDuplex = useDuplexCheckBox.Checked
-        settings.UseFilmScanner = False
         settings.Resolution = If(blackAndWhiteCheckBox.Checked, ResolutionSettings.Fax, ResolutionSettings.ColourPhotocopier)
         settings.Area = If(Not checkBoxArea.Checked, Nothing, areaSettings)
         settings.ShouldTransferAllPages = True
