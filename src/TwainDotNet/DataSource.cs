@@ -220,6 +220,7 @@ namespace TwainDotNet
                 // Do nothing if the data source does not support the requested capability
             }
         }
+
         public void NegotiateLightPath(ScanSettings scanSettings)
         {
             try
