@@ -73,7 +73,7 @@ namespace TwainDotNet
         bool? _useFilmScanner;
 
         /// <summary>
-        /// Indicates if the transmitted light film SCanner should be used as the light source.
+        /// Indicates if the transmitted light film Scanner should be used as the light source.
         /// </summary>
         public bool? UseFilmScanner
         {
