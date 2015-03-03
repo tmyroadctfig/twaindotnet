@@ -551,26 +551,27 @@ namespace TwainDotNet
         {
             if (SourceId.Id != 0)
             {
-                UserInterface userInterface = new UserInterface();
-
-                TwainResult result = Twain32Native.DsUserInterface(
-                    _applicationId,
-                    SourceId,
-                    DataGroup.Control,
-                    DataArgumentType.UserInterface,
-                    Message.DisableDS,
-                    userInterface);
-
-                if (result != TwainResult.Failure)
+                try
                 {
-                    result = Twain32Native.DsmIdentity(
+                    UserInterface userInterface = new UserInterface();
+    
+                    TwainResult result = Twain32Native.DsUserInterface(
                         _applicationId,
-                        IntPtr.Zero,
+                        SourceId,
                         DataGroup.Control,
-                        DataArgumentType.Identity,
-                        Message.CloseDS,
-                        SourceId);
+                        DataArgumentType.UserInterface,
+                        Message.DisableDS,
+                        userInterface);
+    
+                    result = Twain32Native.DsmIdentity(
+                            _applicationId,
+                            IntPtr.Zero,
+                            DataGroup.Control,
+                            DataArgumentType.Identity,
+                            Message.CloseDS,
+                            SourceId);
                 }
+                catch {}
             }
         }
     }
