@@ -62,6 +62,9 @@ Also check out another alternative library: [NTwain](http://www.nuget.org/packag
 
 ### Panasonic
    * Panasonic KV-S1025C
+   
+### Plustek
+   * Plustek OpticSlim 550
 
 ### Ricoh
    * Ricoh Aficio MP 161
