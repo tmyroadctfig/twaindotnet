@@ -238,7 +238,8 @@ namespace TwainDotNet
                         if (imageMemXfer.Memory.TheMem == IntPtr.Zero) {
                             throw new TwainException("error allocating buffer for memory transfer");
                         }
-                        int pixel_number = 0;
+                        long pixels_written = 0;
+                        long total_pixels = imageInfo.ImageWidth * imageInfo.ImageLength;
 
                         do {
                             // perform a transfer
@@ -253,13 +254,19 @@ namespace TwainDotNet
                             int i = 1;
 
                             if (result == TwainResult.Success || result == TwainResult.XferDone) {
-                                BitmapRenderer.TransferPixels(bitmap,ref pixel_number,imageInfo,imageMemXfer);
+                                BitmapRenderer.TransferPixels(bitmap,imageInfo,imageMemXfer);
+                                int bytes_per_pixel = (imageInfo.BitsPerPixel / 8);
+                                pixels_written += imageMemXfer.BytesWritten / bytes_per_pixel;
+                                double percent_complete = (double)pixels_written / (double)total_pixels;
+                                if (result == TwainResult.XferDone) {
+                                    percent_complete = 1.0;
+                                }
                                 // fire the transfer event
-                                TransferImageEventArgs args = new TransferImageEventArgs(bitmap, result != TwainResult.XferDone);
+                                TransferImageEventArgs args = new TransferImageEventArgs(bitmap, result != TwainResult.XferDone, (float)percent_complete);
                                 TransferImage(this, args);
                                 if (!args.ContinueScanning) {
                                     result = TwainResult.XferDone;
-                                }
+                                }                                                               
                             }
 
                         } while (result == TwainResult.Success);
@@ -374,7 +381,7 @@ namespace TwainDotNet
                     {
                         using (var renderer = new BitmapRenderer(hbitmap))
                         {
-                            TransferImageEventArgs args = new TransferImageEventArgs(renderer.RenderToBitmap(), pendingTransfer.Count != 0);
+                            TransferImageEventArgs args = new TransferImageEventArgs(renderer.RenderToBitmap(), pendingTransfer.Count != 0, 1.0f);
                             TransferImage(this, args);
                             if (!args.ContinueScanning)
                                 break;

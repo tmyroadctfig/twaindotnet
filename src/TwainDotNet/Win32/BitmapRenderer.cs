@@ -103,39 +103,26 @@ namespace TwainDotNet.Win32
 
         public static Bitmap NewBitmapForImageInfo(TwainDotNet.TwainNative.ImageInfo imageInfo) 
         {
-            return new Bitmap(imageInfo.ImageWidth,imageInfo.ImageLength,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-        }
-
-        public static void TransferPixels_Test(Bitmap bitmap_dest, ref int pixel_number, TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src)
-        {
-            
-            int bytes_per_pixel = imageInfo.BitsPerPixel / 8;
-            int num_pixels_in_buffer = (int)memxfer_src.BytesWritten / bytes_per_pixel;
-
-            // iterate through provided pixels, copying out pixel data
-            for ( int i=0 ; i < num_pixels_in_buffer ; i++ ) {
-                            
-                int x = pixel_number % bitmap_dest.Width;
-                int y = pixel_number / bitmap_dest.Width;
-                bitmap_dest.SetPixel(x,y,Color.Red);
-                pixel_number++;
+            var bitmap = new Bitmap(imageInfo.ImageWidth,imageInfo.ImageLength,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            using (Graphics graphics = Graphics.FromImage(bitmap)) {
+                graphics.Clear(Color.White);
             }
+            return bitmap;
         }
 
-
-
-
-        public static unsafe void TransferPixels(Bitmap bitmap_dest, ref int pixel_number, TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src) {
+        public static unsafe void TransferPixels(Bitmap bitmap_dest, 
+            TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src) {
             BitmapInfoHeaderStruct bitmapInfo = new BitmapInfoHeaderStruct();
             bitmapInfo.Width = (int) memxfer_src.Columns;
             bitmapInfo.Height = - (int) memxfer_src.Rows;
-            bitmapInfo.Size = sizeof(BitmapInfoHeaderStruct);
-            bitmapInfo.BitCount = imageInfo.BitsPerPixel;    
+            bitmapInfo.Size = sizeof(BitmapInfoHeaderStruct);            
             bitmapInfo.Planes = 1;
-            bitmapInfo.SizeImage = 0;            
-
+            bitmapInfo.SizeImage = 0;
+            bitmapInfo.BitCount = imageInfo.BitsPerPixel;   // this might not work in all cases            
 
             using (Graphics graphics = Graphics.FromImage(bitmap_dest)) {
+                
+
                 IntPtr hdc = graphics.GetHdc();
                 try {
                     Gdi32Native.SetDIBitsToDevice(
