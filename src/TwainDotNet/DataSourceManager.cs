@@ -139,7 +139,7 @@ namespace TwainDotNet
                     Exception exception = null;
                     try
                     {
-                        TransferPictures();
+                        TransferPicturesIncremental();
                     }
                     catch (Exception e)
                     {
@@ -163,10 +163,129 @@ namespace TwainDotNet
 
             handled = true;
             return IntPtr.Zero;
+        }      
+
+        protected void TransferPicturesIncremental()
+        {
+            // see http://www.twain.org/wp-content/uploads/2017/03/TWAIN-2.4-Specification.pdf
+            // page 4-20
+
+            if (DataSource.SourceId.Id == 0) {
+                return;
+            }
+
+            PendingXfers pendingTransfer = new PendingXfers();
+            TwainResult result;
+            try {
+                do {
+                    pendingTransfer.Count = 0;     // the Twain source will fill this in during DsPendingTransfer                    
+
+                    // Get the image info
+                    ImageInfo imageInfo = new ImageInfo();
+                    result = Twain32Native.DsImageInfo(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Image,
+                        DataArgumentType.ImageInfo,
+                        Message.Get,
+                        imageInfo);
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+
+                    // Setup Destination Bitmap
+                    Bitmap bitmap = BitmapRenderer.NewBitmapForImageInfo(imageInfo);
+
+                    // Setup incremental Memory XFer                                        
+                    SetupMemXfer setupMemXfer = new SetupMemXfer();
+                    result = Twain32Native.DsSetupMemXfer(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Control,
+                        DataArgumentType.SetupMemXfer,
+                        Message.Get,
+                        setupMemXfer
+                        );
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+                    
+                    // allocate the preferred buffer size                    
+                    ImageMemXfer imageMemXfer = new ImageMemXfer();
+                    try {
+                        imageMemXfer.Memory.Flags = MemoryFlags.AppOwns | MemoryFlags.Pointer;
+                        imageMemXfer.Memory.Length = setupMemXfer.MinBufSize;
+                        imageMemXfer.Memory.TheMem = Kernel32Native.GlobalAlloc(GlobalAllocFlags.MemFixed, (int)setupMemXfer.Preferred);
+                        int pixel_number = 0;
+
+                        do {
+                            // perform a transfer
+                            result = Twain32Native.DsImageMemXfer(
+                                ApplicationId,
+                                DataSource.SourceId,
+                                DataGroup.Image,
+                                DataArgumentType.ImageMemXfer,
+                                Message.Get,
+                                imageMemXfer
+                                );
+
+                            if (result == TwainResult.Success || result == TwainResult.XferDone) {
+                                BitmapRenderer.TransferPixels(bitmap,ref pixel_number,imageInfo,imageMemXfer);
+                                // fire the transfer event
+                                TransferImageEventArgs args = new TransferImageEventArgs(bitmap, result != TwainResult.XferDone);
+                                TransferImage(this, args);
+                                if (!args.ContinueScanning)
+                                    break;
+                            }
+
+                        } while (result == TwainResult.Success);
+
+                    } finally {
+                        if (imageMemXfer.Memory.TheMem != IntPtr.Zero) {
+                            Kernel32Native.GlobalFree(imageMemXfer.Memory.TheMem);
+                            imageMemXfer.Memory.TheMem = IntPtr.Zero;
+                        }
+                    }
+
+                    // End pending transfers
+                    result = Twain32Native.DsPendingTransfer(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Control,
+                        DataArgumentType.PendingXfers,
+                        Message.EndXfer,
+                        pendingTransfer);
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+                }
+                while (pendingTransfer.Count != 0);
+            }
+            finally {
+                // Reset any pending transfers
+                result = Twain32Native.DsPendingTransfer(
+                    ApplicationId,
+                    DataSource.SourceId,
+                    DataGroup.Control,
+                    DataArgumentType.PendingXfers,
+                    Message.Reset,
+                    pendingTransfer);
+            }
+
+
         }
 
         protected void TransferPictures()
         {
+            // see http://www.twain.org/wp-content/uploads/2017/03/TWAIN-2.4-Specification.pdf
+            // page (3-20)
+
             if (DataSource.SourceId.Id == 0)
             {
                 return;
@@ -178,8 +297,8 @@ namespace TwainDotNet
             {
                 do
                 {
-                    pendingTransfer.Count = 0;
-                    IntPtr hbitmap = IntPtr.Zero;
+                    pendingTransfer.Count = 0;     // the Twain source will fill this in during DsPendingTransfer
+                    IntPtr hbitmap = IntPtr.Zero;  // the Twain source will allocate this buffer, and BitmapRenderer will deallocate it
 
                     // Get the image info
                     ImageInfo imageInfo = new ImageInfo();

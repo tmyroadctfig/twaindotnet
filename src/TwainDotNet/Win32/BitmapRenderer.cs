@@ -100,5 +100,25 @@ namespace TwainDotNet.Win32
             Kernel32Native.GlobalUnlock(_dibHandle);
             Kernel32Native.GlobalFree(_dibHandle);
         }
+
+        public static Bitmap NewBitmapForImageInfo(TwainDotNet.TwainNative.ImageInfo imageInfo) 
+        {
+            return new Bitmap(imageInfo.ImageWidth,imageInfo.ImageLength,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+        }
+
+        public static void TransferPixels(Bitmap bitmap_dest, ref int pixel_number, TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src)
+        {
+
+            int num_pixels_in_buffer = (int)((long)memxfer_src.Memory.Length / (long)(1 << imageInfo.BitsPerPixel));
+
+            // iterate through provided pixels, copying out pixel data
+            for ( int i=0 ; i < num_pixels_in_buffer ; i++ ) {
+                            
+                int x = pixel_number % bitmap_dest.Width;
+                int y = pixel_number / bitmap_dest.Width;
+                bitmap_dest.SetPixel(x,y,Color.Black);
+                pixel_number++;
+            }
+        }
     }
 }
