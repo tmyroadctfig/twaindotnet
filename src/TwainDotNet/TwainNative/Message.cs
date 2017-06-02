@@ -51,6 +51,9 @@ namespace TwainDotNet.TwainNative
         Copy = 0x080A,
         AutoCaptureDir = 0x080B,
 
-        PassThru = 0x0901
+        PassThru = 0x0901,
+        RegisterCallback = 0x0902,
+
+        ResetAll = 0x0A01,
     }
 }

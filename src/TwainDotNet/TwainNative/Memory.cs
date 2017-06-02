@@ -25,7 +25,7 @@ namespace TwainDotNet.TwainNative
     /// TWMF_POINTER 0x8
     /// TWMF_HANDLE 0x10
     /// </summary>
-    public enum MemoryFlags : ushort
+    public enum MemoryFlags : uint   // UInt32
     {
         AppOwns = 0x1,
         DsmOwns = 0x2,

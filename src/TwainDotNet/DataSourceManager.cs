@@ -195,6 +195,20 @@ namespace TwainDotNet
                         break;
                     }
 
+                    ImageLayout imageLayout = new ImageLayout();
+                    result = Twain32Native.DsImageLayout(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Image,
+                        DataArgumentType.ImageLayout,
+                        Message.Get,
+                        imageLayout);
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+
                     // Setup Destination Bitmap
                     Bitmap bitmap = BitmapRenderer.NewBitmapForImageInfo(imageInfo);
 
@@ -218,8 +232,12 @@ namespace TwainDotNet
                     ImageMemXfer imageMemXfer = new ImageMemXfer();
                     try {
                         imageMemXfer.Memory.Flags = MemoryFlags.AppOwns | MemoryFlags.Pointer;
-                        imageMemXfer.Memory.Length = setupMemXfer.MinBufSize;
-                        imageMemXfer.Memory.TheMem = Kernel32Native.GlobalAlloc(GlobalAllocFlags.MemFixed, (int)setupMemXfer.Preferred);
+                        imageMemXfer.Memory.Length = setupMemXfer.Preferred;
+                        imageMemXfer.Memory.TheMem = Kernel32Native.GlobalAlloc(GlobalAllocFlags.MemFixed, (int)setupMemXfer.Preferred * 2);
+
+                        if (imageMemXfer.Memory.TheMem == IntPtr.Zero) {
+                            throw new TwainException("error allocating buffer for memory transfer");
+                        }
                         int pixel_number = 0;
 
                         do {
@@ -232,14 +250,16 @@ namespace TwainDotNet
                                 Message.Get,
                                 imageMemXfer
                                 );
+                            int i = 1;
 
                             if (result == TwainResult.Success || result == TwainResult.XferDone) {
                                 BitmapRenderer.TransferPixels(bitmap,ref pixel_number,imageInfo,imageMemXfer);
                                 // fire the transfer event
                                 TransferImageEventArgs args = new TransferImageEventArgs(bitmap, result != TwainResult.XferDone);
                                 TransferImage(this, args);
-                                if (!args.ContinueScanning)
-                                    break;
+                                if (!args.ContinueScanning) {
+                                    result = TwainResult.XferDone;
+                                }
                             }
 
                         } while (result == TwainResult.Success);

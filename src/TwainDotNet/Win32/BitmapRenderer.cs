@@ -108,15 +108,15 @@ namespace TwainDotNet.Win32
 
         public static void TransferPixels(Bitmap bitmap_dest, ref int pixel_number, TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src)
         {
-
-            int num_pixels_in_buffer = (int)((long)memxfer_src.Memory.Length / (long)(1 << imageInfo.BitsPerPixel));
+            int bytes_per_pixel = imageInfo.BitsPerPixel / 8;
+            int num_pixels_in_buffer = (int)memxfer_src.BytesWritten / bytes_per_pixel;
 
             // iterate through provided pixels, copying out pixel data
             for ( int i=0 ; i < num_pixels_in_buffer ; i++ ) {
                             
                 int x = pixel_number % bitmap_dest.Width;
                 int y = pixel_number / bitmap_dest.Width;
-                bitmap_dest.SetPixel(x,y,Color.Black);
+                bitmap_dest.SetPixel(x,y,Color.Red);
                 pixel_number++;
             }
         }
