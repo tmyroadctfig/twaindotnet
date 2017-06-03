@@ -407,8 +407,8 @@ namespace TwainDotNet
         public bool Enable(ScanSettings settings)
         {
             UserInterface ui = new UserInterface();
-            ui.ShowUI = (short)(settings.ShowTwainUI ? 1 : 0);
-            ui.ModalUI = 1;
+            ui.ShowUI = (settings.ShowTwainUI ? TwainBool.True : TwainBool.False);
+            ui.ModalUI = TwainBool.True;
             ui.ParentHand = _messageHook.WindowHandle;
 
             var result = Twain32Native.DsUserInterface(

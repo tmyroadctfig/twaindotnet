@@ -17,7 +17,7 @@ namespace TwainDotNet.TwainNative
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
         public short[] BitsPerSample;
         public short BitsPerPixel;
-        public short Planar;
+        public TwainBool Planar;
         public short PixelType;
         public Compression Compression;
     }

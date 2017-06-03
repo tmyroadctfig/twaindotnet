@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>bin\Debug\TwainDotNet.XML</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -68,6 +68,7 @@
     <Compile Include="TransferImageEventArgs.cs" />
     <Compile Include="TwainException.cs" />
     <Compile Include="TwainNative\AutoSize.cs" />
+    <Compile Include="TwainNative\TwainBool.cs" />
     <Compile Include="TwainNative\CapabilityArrayValue.cs" />
     <Compile Include="TwainNative\CapabilityEnumValue.cs" />
     <Compile Include="TwainNative\CapabilityOneValue.cs" />

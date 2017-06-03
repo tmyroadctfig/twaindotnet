@@ -16,7 +16,6 @@ namespace TwainDotNet.Win32
             double dotsPerInch = pixelsPerMillimeter * 25.4;
             return (float)Math.Round(dotsPerInch, 2);
         }
-
         
         public static Bitmap NewBitmapFromHBitmap(IntPtr dibHandle) {
 
@@ -85,18 +84,45 @@ namespace TwainDotNet.Win32
             return bitmap;
         }
 
-        public static unsafe void TransferPixels(Bitmap bitmap_dest, 
+        public static void TransferPixels(Bitmap bitmap_dest, 
             TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src) {
-            BitmapInfoHeaderStruct bitmapInfo = new BitmapInfoHeaderStruct();
+            BitmapInfoHeader bitmapInfo = new BitmapInfoHeader();
             bitmapInfo.Width = (int) memxfer_src.Columns;
             bitmapInfo.Height = - (int) memxfer_src.Rows;
-            bitmapInfo.Size = sizeof(BitmapInfoHeaderStruct);            
+            // bitmapInfo.Size = sizeof(BitmapInfoHeader);   // requires unsafe
+            bitmapInfo.Size = 48;
             bitmapInfo.Planes = 1;
             bitmapInfo.SizeImage = 0;
-            bitmapInfo.BitCount = imageInfo.BitsPerPixel;   // this might not work in all cases            
 
-            using (Graphics graphics = Graphics.FromImage(bitmap_dest)) {
-                
+            if (imageInfo.SamplesPerPixel != 3) {
+                // 3 = RGB, 4 = CMYK, 1 = Grayscale
+                // we only support RGB right now
+
+                throw new TwainException("Samples Per Pixel Unsupported: " + imageInfo.SamplesPerPixel.ToString());
+            }
+            if (imageInfo.Planar == TwainNative.TwainBool.True) {
+                // this means the data is in the buffer as RRRR-GGGGG-BBBB instead of RGB-RGB-RGB
+                // we don't currently support this decoding
+                throw new TwainException("Planar image format Unsupported:");
+            }
+
+            // imageInfo.BitsPerPixel can be (1, 8, 24, 40) - Twain Spec page (8-39)
+            // "The number of bits in each image pixel (or bit depth). This value is invariant across the
+            // image. 24 - bit R - G - B has BitsPerPixel = 24. 40 - bit C - M - Y - K has BitsPerPixel = 40. 
+            // 8 - bit Grayscale has BitsPerPixel = 8.Black and White has BitsPerPixel = 1." 
+
+            switch (imageInfo.BitsPerPixel) {
+                case 1:
+                case 24:
+                    bitmapInfo.BitCount = imageInfo.BitsPerPixel;
+                    break;
+                case 8:    // imageInfo is 8bit grayscale, but DIBitmap requires building a 256 entry color table
+                case 40:   // imageInfo is 40bit CMYL. DIBitmap only supports up to 32bits per pixel RGB.
+                default:
+                    throw new TwainException("unhandled image bit depth: " + imageInfo.BitsPerPixel.ToString());
+            }
+
+            using (Graphics graphics = Graphics.FromImage(bitmap_dest)) {                
 
                 IntPtr hdc = graphics.GetHdc();
                 try {
@@ -109,7 +135,7 @@ namespace TwainDotNet.Win32
                         0, 0, 0, 
                         (int)memxfer_src.Rows,
                         memxfer_src.Memory.TheMem, 
-                        new IntPtr(&bitmapInfo), 
+                        bitmapInfo, 
                         0);
                 }
                 finally {
