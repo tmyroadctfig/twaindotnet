@@ -187,7 +187,7 @@ namespace TwainDotNet
                 do
                 {
                     pendingTransfer.Count = 0;     // the Twain source will fill this in during DsPendingTransfer
-                    IntPtr hbitmap = IntPtr.Zero;  // the Twain source will allocate this buffer, and BitmapRenderer will deallocate it
+                    IntPtr hbitmap = IntPtr.Zero;
 
                     // Get the image info
                     ImageInfo imageInfo = new ImageInfo();
