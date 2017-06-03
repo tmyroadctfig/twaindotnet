@@ -168,149 +168,6 @@ namespace TwainDotNet
 
             handled = true;
             return IntPtr.Zero;
-        }      
-
-        protected void TransferPicturesIncremental()
-        {
-            // see http://www.twain.org/wp-content/uploads/2017/03/TWAIN-2.4-Specification.pdf
-            // page 4-20
-
-            if (DataSource.SourceId.Id == 0) {
-                return;
-            }
-
-            PendingXfers pendingTransfer = new PendingXfers();
-            TwainResult result;
-            try {
-                do {
-                    pendingTransfer.Count = 0;     // the Twain source will fill this in during DsPendingTransfer                    
-
-                    // Get the image info
-                    ImageInfo imageInfo = new ImageInfo();
-                    result = Twain32Native.DsImageInfo(
-                        ApplicationId,
-                        DataSource.SourceId,
-                        DataGroup.Image,
-                        DataArgumentType.ImageInfo,
-                        Message.Get,
-                        imageInfo);
-
-                    if (result != TwainResult.Success) {
-                        DataSource.Close();
-                        break;
-                    }
-
-                    ImageLayout imageLayout = new ImageLayout();
-                    result = Twain32Native.DsImageLayout(
-                        ApplicationId,
-                        DataSource.SourceId,
-                        DataGroup.Image,
-                        DataArgumentType.ImageLayout,
-                        Message.Get,
-                        imageLayout);
-
-                    if (result != TwainResult.Success) {
-                        DataSource.Close();
-                        break;
-                    }
-
-                    // Setup Destination Bitmap
-                    Bitmap bitmap = BitmapRenderer.NewBitmapForImageInfo(imageInfo);
-
-                    // Setup incremental Memory XFer                                        
-                    SetupMemXfer setupMemXfer = new SetupMemXfer();
-                    result = Twain32Native.DsSetupMemXfer(
-                        ApplicationId,
-                        DataSource.SourceId,
-                        DataGroup.Control,
-                        DataArgumentType.SetupMemXfer,
-                        Message.Get,
-                        setupMemXfer
-                        );
-
-                    if (result != TwainResult.Success) {
-                        DataSource.Close();
-                        break;
-                    }
-                    
-                    // allocate the preferred buffer size                    
-                    ImageMemXfer imageMemXfer = new ImageMemXfer();
-                    try {
-                        imageMemXfer.Memory.Flags = MemoryFlags.AppOwns | MemoryFlags.Pointer;
-                        imageMemXfer.Memory.Length = setupMemXfer.Preferred;
-                        imageMemXfer.Memory.TheMem = Kernel32Native.GlobalAlloc(GlobalAllocFlags.MemFixed, (int)setupMemXfer.Preferred * 2);
-
-                        if (imageMemXfer.Memory.TheMem == IntPtr.Zero) {
-                            throw new TwainException("error allocating buffer for memory transfer");
-                        }
-                        long pixels_written = 0;
-                        long total_pixels = imageInfo.ImageWidth * imageInfo.ImageLength;
-
-                        do {
-                            // perform a transfer
-                            result = Twain32Native.DsImageMemXfer(
-                                ApplicationId,
-                                DataSource.SourceId,
-                                DataGroup.Image,
-                                DataArgumentType.ImageMemXfer,
-                                Message.Get,
-                                imageMemXfer
-                                );
-                            int i = 1;
-
-                            if (result == TwainResult.Success || result == TwainResult.XferDone) {
-                                BitmapRenderer.TransferPixels(bitmap,imageInfo,imageMemXfer);
-                                int bytes_per_pixel = (imageInfo.BitsPerPixel / 8);
-                                pixels_written += imageMemXfer.BytesWritten / bytes_per_pixel;
-                                double percent_complete = (double)pixels_written / (double)total_pixels;
-                                if (result == TwainResult.XferDone) {
-                                    percent_complete = 1.0;
-                                }
-                                // fire the transfer event
-                                TransferImageEventArgs args = new TransferImageEventArgs(bitmap, result != TwainResult.XferDone, (float)percent_complete);
-                                TransferImage(this, args);
-                                if (!args.ContinueScanning) {
-                                    result = TwainResult.XferDone;
-                                }                                                               
-                            }
-
-                        } while (result == TwainResult.Success);
-
-                    } finally {
-                        if (imageMemXfer.Memory.TheMem != IntPtr.Zero) {
-                            Kernel32Native.GlobalFree(imageMemXfer.Memory.TheMem);
-                            imageMemXfer.Memory.TheMem = IntPtr.Zero;
-                        }
-                    }
-
-                    // End pending transfers
-                    result = Twain32Native.DsPendingTransfer(
-                        ApplicationId,
-                        DataSource.SourceId,
-                        DataGroup.Control,
-                        DataArgumentType.PendingXfers,
-                        Message.EndXfer,
-                        pendingTransfer);
-
-                    if (result != TwainResult.Success) {
-                        DataSource.Close();
-                        break;
-                    }
-                }
-                while (pendingTransfer.Count != 0);
-            }
-            finally {
-                // Reset any pending transfers
-                result = Twain32Native.DsPendingTransfer(
-                    ApplicationId,
-                    DataSource.SourceId,
-                    DataGroup.Control,
-                    DataArgumentType.PendingXfers,
-                    Message.Reset,
-                    pendingTransfer);
-            }
-
-
         }
 
         protected void TransferPictures()
@@ -411,6 +268,150 @@ namespace TwainDotNet
                     pendingTransfer);
             }
         }
+
+        protected void TransferPicturesIncremental() {
+            // see http://www.twain.org/wp-content/uploads/2017/03/TWAIN-2.4-Specification.pdf
+            // page 4-20
+
+            if (DataSource.SourceId.Id == 0) {
+                return;
+            }
+
+            PendingXfers pendingTransfer = new PendingXfers();
+            TwainResult result;
+            try {
+                do {
+                    pendingTransfer.Count = 0;     // the Twain source will fill this in during DsPendingTransfer                    
+
+                    // Get the image info
+                    ImageInfo imageInfo = new ImageInfo();
+                    result = Twain32Native.DsImageInfo(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Image,
+                        DataArgumentType.ImageInfo,
+                        Message.Get,
+                        imageInfo);
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+
+                    ImageLayout imageLayout = new ImageLayout();
+                    result = Twain32Native.DsImageLayout(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Image,
+                        DataArgumentType.ImageLayout,
+                        Message.Get,
+                        imageLayout);
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+
+                    // Setup Destination Bitmap
+                    Bitmap bitmap = BitmapRenderer.NewBitmapForImageInfo(imageInfo);
+
+                    // Setup incremental Memory XFer                                        
+                    SetupMemXfer setupMemXfer = new SetupMemXfer();
+                    result = Twain32Native.DsSetupMemXfer(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Control,
+                        DataArgumentType.SetupMemXfer,
+                        Message.Get,
+                        setupMemXfer
+                        );
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+
+                    // allocate the preferred buffer size                    
+                    ImageMemXfer imageMemXfer = new ImageMemXfer();
+                    try {
+                        imageMemXfer.Memory.Flags = MemoryFlags.AppOwns | MemoryFlags.Pointer;
+                        imageMemXfer.Memory.Length = setupMemXfer.Preferred;
+                        imageMemXfer.Memory.TheMem = Kernel32Native.GlobalAlloc(GlobalAllocFlags.MemFixed, (int)setupMemXfer.Preferred * 2);
+
+                        if (imageMemXfer.Memory.TheMem == IntPtr.Zero) {
+                            throw new TwainException("error allocating buffer for memory transfer");
+                        }
+                        long pixels_written = 0;
+                        long total_pixels = imageInfo.ImageWidth * imageInfo.ImageLength;
+
+                        do {
+                            // perform a transfer
+                            result = Twain32Native.DsImageMemXfer(
+                                ApplicationId,
+                                DataSource.SourceId,
+                                DataGroup.Image,
+                                DataArgumentType.ImageMemXfer,
+                                Message.Get,
+                                imageMemXfer
+                                );
+                            int i = 1;
+
+                            if (result == TwainResult.Success || result == TwainResult.XferDone) {
+                                BitmapRenderer.TransferPixels(bitmap, imageInfo, imageMemXfer);
+                                int bytes_per_pixel = (imageInfo.BitsPerPixel / 8);
+                                pixels_written += imageMemXfer.BytesWritten / bytes_per_pixel;
+                                double percent_complete = (double)pixels_written / (double)total_pixels;
+                                if (result == TwainResult.XferDone) {
+                                    percent_complete = 1.0;
+                                }
+                                // fire the transfer event
+                                TransferImageEventArgs args = new TransferImageEventArgs(bitmap, result != TwainResult.XferDone, (float)percent_complete);
+                                TransferImage(this, args);
+                                if (!args.ContinueScanning) {
+                                    result = TwainResult.XferDone;
+                                }
+                            }
+
+                        } while (result == TwainResult.Success);
+
+                    }
+                    finally {
+                        if (imageMemXfer.Memory.TheMem != IntPtr.Zero) {
+                            Kernel32Native.GlobalFree(imageMemXfer.Memory.TheMem);
+                            imageMemXfer.Memory.TheMem = IntPtr.Zero;
+                        }
+                    }
+
+                    // End pending transfers
+                    result = Twain32Native.DsPendingTransfer(
+                        ApplicationId,
+                        DataSource.SourceId,
+                        DataGroup.Control,
+                        DataArgumentType.PendingXfers,
+                        Message.EndXfer,
+                        pendingTransfer);
+
+                    if (result != TwainResult.Success) {
+                        DataSource.Close();
+                        break;
+                    }
+                }
+                while (pendingTransfer.Count != 0);
+            }
+            finally {
+                // Reset any pending transfers
+                result = Twain32Native.DsPendingTransfer(
+                    ApplicationId,
+                    DataSource.SourceId,
+                    DataGroup.Control,
+                    DataArgumentType.PendingXfers,
+                    Message.Reset,
+                    pendingTransfer);
+            }
+
+
+        }
+
 
         protected void CloseDsAndCompleteScanning(Exception exception)
         {

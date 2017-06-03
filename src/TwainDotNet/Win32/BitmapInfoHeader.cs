@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Diagnostics;
 
 namespace TwainDotNet.Win32
-{    
+{
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public class BitmapInfoHeader
     {
@@ -39,5 +39,4 @@ namespace TwainDotNet.Win32
                 ClrImportant);
         }
     }
-
 }
