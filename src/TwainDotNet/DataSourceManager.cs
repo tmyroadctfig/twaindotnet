@@ -21,7 +21,7 @@ namespace TwainDotNet
 
         public Identity ApplicationId { get; private set; }
         public DataSource DataSource { get; private set; }
-        public bool UseIncrementalMemoryXfer { get; set; } = true;
+        public bool UseIncrementalMemoryXfer { get; set; } = false;
 
         public DataSourceManager(Identity applicationId, IWindowsMessageHook messageHook)
         {
@@ -347,20 +347,33 @@ namespace TwainDotNet
                         DataSource.Close();
                         break;
                     }
+                    Bitmap bitmap;
+                    try {
 
-                    // Transfer the image from the device
-                    result = Twain32Native.DsImageTransfer(
-                        ApplicationId,
-                        DataSource.SourceId,
-                        DataGroup.Image,
-                        DataArgumentType.ImageNativeXfer,
-                        Message.Get,
-                        ref hbitmap);
+                        // Transfer the image from the device
+                        result = Twain32Native.DsImageTransfer(
+                            ApplicationId,
+                            DataSource.SourceId,
+                            DataGroup.Image,
+                            DataArgumentType.ImageNativeXfer,
+                            Message.Get,
+                            ref hbitmap);
 
-                    if (result != TwainResult.XferDone)
-                    {
-                        DataSource.Close();
-                        break;
+                        if (result != TwainResult.XferDone)
+                        {
+                            DataSource.Close();
+                            break;
+                        }
+                        if (hbitmap == IntPtr.Zero) {
+                            throw new TwainException("Transfer complete, but bitmap pointer is still null.");
+                        }
+                        
+                        bitmap = BitmapRenderer.NewBitmapFromHBitmap(hbitmap);
+                    } finally {
+                        if (hbitmap != IntPtr.Zero) {
+                            Kernel32Native.GlobalFree(hbitmap);
+                            hbitmap = IntPtr.Zero;
+                        }
                     }
 
                     // End pending transfers
@@ -378,20 +391,11 @@ namespace TwainDotNet
                         break;
                     }
 
-                    if (hbitmap == IntPtr.Zero)
-                    {
-                        log.Warn("Transfer complete but bitmap pointer is still null.");
-                    }
-                    else
-                    {
-                        using (var renderer = new BitmapRenderer(hbitmap))
-                        {
-                            TransferImageEventArgs args = new TransferImageEventArgs(renderer.RenderToBitmap(), pendingTransfer.Count != 0, 1.0f);
-                            TransferImage(this, args);
-                            if (!args.ContinueScanning)
-                                break;
-                        }
-                    }
+                    // fire the transfer event...
+                    TransferImageEventArgs args = new TransferImageEventArgs(bitmap, pendingTransfer.Count != 0, 1.0f);
+                    TransferImage(this, args);
+                    if (!args.ContinueScanning)
+                        break;
                 }
                 while (pendingTransfer.Count != 0);
             }
