@@ -21,6 +21,7 @@ namespace TwainDotNet
 
         public Identity ApplicationId { get; private set; }
         public DataSource DataSource { get; private set; }
+        public bool UseIncrementalMemoryXfer { get; set; } = true;
 
         public DataSourceManager(Identity applicationId, IWindowsMessageHook messageHook)
         {
@@ -139,7 +140,11 @@ namespace TwainDotNet
                     Exception exception = null;
                     try
                     {
-                        TransferPicturesIncremental();
+                        if (this.UseIncrementalMemoryXfer) {
+                            TransferPicturesIncremental();
+                        } else {
+                            TransferPictures();
+                        }
                     }
                     catch (Exception e)
                     {
