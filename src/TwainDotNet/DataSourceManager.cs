@@ -357,9 +357,8 @@ namespace TwainDotNet
                             int i = 1;
 
                             if (result == TwainResult.Success || result == TwainResult.XferDone) {
-                                BitmapRenderer.TransferPixels(bitmap, imageInfo, imageMemXfer);
-                                int bytes_per_pixel = (imageInfo.BitsPerPixel / 8);
-                                pixels_written += imageMemXfer.BytesWritten / bytes_per_pixel;
+                                BitmapRenderer.TransferPixels(bitmap, imageInfo, imageMemXfer);                                
+                                pixels_written += (imageMemXfer.BytesWritten * 8) / imageInfo.BitsPerPixel;
                                 double percent_complete = (double)pixels_written / (double)total_pixels;
                                 if (result == TwainResult.XferDone) {
                                     percent_complete = 1.0;

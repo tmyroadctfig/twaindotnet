@@ -84,26 +84,73 @@ namespace TwainDotNet.Win32
             return bitmap;
         }
 
-        public static void TransferPixels(Bitmap bitmap_dest, 
+        private static void TransferPixelsGreyscale(Bitmap bitmap_dest,
             TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src) {
-            BitmapInfoHeader bitmapInfo = new BitmapInfoHeader();
-            bitmapInfo.Width = (int) memxfer_src.Columns;
-            bitmapInfo.Height = - (int) memxfer_src.Rows;
+            BitmapInfoHeaderIndexedColor bitmapInfo = new BitmapInfoHeaderIndexedColor();            
+            bitmapInfo.Width = (int)memxfer_src.Columns;
+            bitmapInfo.Height = -(int)memxfer_src.Rows;
             // bitmapInfo.Size = sizeof(BitmapInfoHeader);   // requires unsafe
-            bitmapInfo.Size = 48;
+            bitmapInfo.Size = 40; // the size of the initial header, not including color table
             bitmapInfo.Planes = 1;
             bitmapInfo.SizeImage = 0;
+            bitmapInfo.BitCount = imageInfo.BitsPerPixel;
 
-            if (imageInfo.SamplesPerPixel != 3) {
-                // 3 = RGB, 4 = CMYK, 1 = Grayscale
-                // we only support RGB right now
-
-                throw new TwainException("Samples Per Pixel Unsupported: " + imageInfo.SamplesPerPixel.ToString());
+            if (imageInfo.Planar == TwainNative.TwainBool.True) {
+                throw new TwainException("Planar format invalid for greyscale data.");
             }
+
+            if (imageInfo.BitsPerPixel == 8) {
+                BitmapInfoHeaderIndexedColor.setupGreyscaleIndices(ref bitmapInfo);
+                bitmapInfo.ClrUsed = 256;
+            }
+            else if (imageInfo.BitsPerPixel == 1) {
+                BitmapInfoHeaderIndexedColor.setupBWIndices(ref bitmapInfo);
+                bitmapInfo.ClrUsed = 2;
+            }
+            else {
+                throw new TwainException("TransferPixelsGreyscale() only supports 8 bits per pixel");
+            }
+            
+
+            using (Graphics graphics = Graphics.FromImage(bitmap_dest)) {
+
+                IntPtr hdc = graphics.GetHdc();
+                try {
+                    Gdi32Native.SetDIBitsToDevice(
+                        hdc,
+                        (int)memxfer_src.XOffset,
+                        (int)memxfer_src.YOffset,
+                        (int)memxfer_src.Columns,
+                        (int)memxfer_src.Rows,
+                        0, 0, 0,
+                        (int)memxfer_src.Rows,
+                        memxfer_src.Memory.TheMem,
+                        bitmapInfo,
+                        0);
+                }
+                finally {
+                    graphics.ReleaseHdc(hdc);
+                }
+            }
+
+
+        }
+
+        private static void TransferPixelsRGB(Bitmap bitmap_dest,
+            TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src) {
+            BitmapInfoHeader bitmapInfo = new BitmapInfoHeader();
+            bitmapInfo.Width = (int)memxfer_src.Columns;
+            bitmapInfo.Height = -(int)memxfer_src.Rows;
+            // bitmapInfo.Size = sizeof(BitmapInfoHeader);   // requires unsafe
+            bitmapInfo.Size = 40;
+            bitmapInfo.Planes = 1;
+            bitmapInfo.SizeImage = 0;
+            bitmapInfo.ClrUsed = 0; // we are not using the indexed color table
+
             if (imageInfo.Planar == TwainNative.TwainBool.True) {
                 // this means the data is in the buffer as RRRR-GGGGG-BBBB instead of RGB-RGB-RGB
                 // we don't currently support this decoding
-                throw new TwainException("Planar image format Unsupported:");
+                throw new TwainException("Planar image format Unsupported.");
             }
 
             // imageInfo.BitsPerPixel can be (1, 8, 24, 40) - Twain Spec page (8-39)
@@ -111,36 +158,59 @@ namespace TwainDotNet.Win32
             // image. 24 - bit R - G - B has BitsPerPixel = 24. 40 - bit C - M - Y - K has BitsPerPixel = 40. 
             // 8 - bit Grayscale has BitsPerPixel = 8.Black and White has BitsPerPixel = 1." 
 
-            switch (imageInfo.BitsPerPixel) {
-                case 1:
-                case 24:
+            switch (imageInfo.BitsPerPixel) {                
+                case 24:                
                     bitmapInfo.BitCount = imageInfo.BitsPerPixel;
                     break;
-                case 8:    // imageInfo is 8bit grayscale, but DIBitmap requires building a 256 entry color table
+                case 1:    // imageInfo is 1bit B&W, should be in TransferPixelsGreyscale()
+                case 8:    // imageInfo is 8bit grayscale, should be in TransferPixelsGreyscale()
                 case 40:   // imageInfo is 40bit CMYL. DIBitmap only supports up to 32bits per pixel RGB.
                 default:
-                    throw new TwainException("unhandled image bit depth: " + imageInfo.BitsPerPixel.ToString());
+                    throw new TwainException("TransferPixelsRGB: unhandled image bit depth: " + imageInfo.BitsPerPixel.ToString());
             }
 
-            using (Graphics graphics = Graphics.FromImage(bitmap_dest)) {                
+            using (Graphics graphics = Graphics.FromImage(bitmap_dest)) {
 
                 IntPtr hdc = graphics.GetHdc();
                 try {
                     Gdi32Native.SetDIBitsToDevice(
-                        hdc, 
-                        (int)memxfer_src.XOffset, 
-                        (int)memxfer_src.YOffset, 
-                        (int)memxfer_src.Columns, 
+                        hdc,
+                        (int)memxfer_src.XOffset,
+                        (int)memxfer_src.YOffset,
+                        (int)memxfer_src.Columns,
                         (int)memxfer_src.Rows,
-                        0, 0, 0, 
+                        0, 0, 0,
                         (int)memxfer_src.Rows,
-                        memxfer_src.Memory.TheMem, 
-                        bitmapInfo, 
+                        memxfer_src.Memory.TheMem,
+                        bitmapInfo,
                         0);
                 }
                 finally {
                     graphics.ReleaseHdc(hdc);
                 }
+            }
+        }
+
+        public static void TransferPixels(Bitmap bitmap_dest, 
+            TwainDotNet.TwainNative.ImageInfo imageInfo, TwainDotNet.TwainNative.ImageMemXfer memxfer_src) {
+
+            switch (imageInfo.SamplesPerPixel) {
+                case 1: // greyscale                    
+                    switch (imageInfo.BitsPerPixel) {
+                        case 1:
+                        case 8:                    
+                            TransferPixelsGreyscale(bitmap_dest,imageInfo,memxfer_src);
+                            break;
+                        default:
+                            throw new TwainException("unsupported bits per pixel: " + imageInfo.BitsPerPixel);
+                    }
+                    break;
+                case 3: // RGB
+                    TransferPixelsRGB(bitmap_dest,imageInfo,memxfer_src);
+                    break;
+                case 4: // CMYK
+                default:
+                    throw new TwainException("Samples Per Pixel Unsupported: " + imageInfo.SamplesPerPixel.ToString());
             }
 
         }
