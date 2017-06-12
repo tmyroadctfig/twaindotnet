@@ -302,7 +302,7 @@ namespace TwainDotNet
         {
             OpenSource();
 
-            if (settings.AbortWhenNoPaperDetectable && !PaperDetectable)
+            if (settings.AbortWhenNoPaperDetectable || !PaperDetectable)
                 throw new FeederEmptyException();
 
             // Set whether or not to show progress window
