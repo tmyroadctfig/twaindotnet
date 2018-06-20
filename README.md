@@ -68,3 +68,7 @@ Also check out another alternative library: [NTwain](http://www.nuget.org/packag
 
 ### Ricoh
    * Ricoh Aficio MP 161
+   
+### Samsung
+   * Samsung M288x Series 3.31
+   
