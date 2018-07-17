@@ -53,6 +53,7 @@ Also check out another alternative library: [NTwain](http://www.nuget.org/packag
 ### HP
    * HP !ScanJet 5370C.
    * HP Color !LaserJet CM2320fxi MFP
+   * HP DeskJet 2130
 
 ### Kodak
    * Kodak i1220
