@@ -18,6 +18,7 @@ namespace TwainDotNet
 
         IWindowsMessageHook _messageHook;
         Event _eventMessage;
+        private object _extTag = null;
 
         public Identity ApplicationId { get; private set; }
         public DataSource DataSource { get; private set; }
@@ -72,14 +73,15 @@ namespace TwainDotNet
 
         public IWindowsMessageHook MessageHook { get { return _messageHook; } }
 
-        public void StartScan(ScanSettings settings)
-        {
+        public bool StartScan(ScanSettings settings, object extTag)
+        { 
             bool scanning = false;
-
             try
             {
+                _extTag = extTag;
                 _messageHook.UseFilter = true;
                 scanning = DataSource.Open(settings);
+                return scanning;
             }
             catch (TwainException e)
             {
@@ -235,7 +237,7 @@ namespace TwainDotNet
                     {
                         using (var renderer = new BitmapRenderer(hbitmap))
                         {
-                            TransferImageEventArgs args = new TransferImageEventArgs(renderer.RenderToBitmap(), pendingTransfer.Count != 0);
+                            TransferImageEventArgs args = new TransferImageEventArgs(renderer.RenderToBitmap(), pendingTransfer.Count, this._extTag);
                             TransferImage(this, args);
                             if (!args.ContinueScanning)
                                 break;
@@ -263,7 +265,7 @@ namespace TwainDotNet
             DataSource.Close();
             try
             {
-                ScanningComplete(this, new ScanningCompleteEventArgs(exception));
+                ScanningComplete(this, new ScanningCompleteEventArgs(exception,this._extTag));
             }
             catch
             {

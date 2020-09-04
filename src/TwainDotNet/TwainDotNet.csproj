@@ -58,6 +58,7 @@
     <Compile Include="Diagnostics.cs" />
     <Compile Include="FeederEmptyException.cs" />
     <Compile Include="IWindowsMessageHook.cs" />
+    <Compile Include="ProtocolVersions.cs" />
     <Compile Include="ScanningCompleteEventArgs.cs" />
     <Compile Include="PageSettings.cs" />
     <Compile Include="ResolutionSettings.cs" />
