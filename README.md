@@ -1,4 +1,4 @@
-#twaindotnet
+# twaindotnet
 
 This project is based off the code from Thomas Scheidegger's excellent article on The Code Project: [http://www.codeproject.com/KB/dotnet/twaindotnet.aspx](http://www.codeproject.com/KB/dotnet/twaindotnet.aspx)
 
@@ -24,7 +24,7 @@ Also check out another alternative library: [NTwain](http://www.nuget.org/packag
   
   
 
-##TWAIN Resources
+## TWAIN Resources
   
   * [TWAIN 2.0 Spec](http://www.twain.org/docs/TWAIN_2_Spec.pdf)
   * [TWAIN header file](http://www.twain.org/devfiles/twain.h)
