@@ -77,7 +77,9 @@ namespace TwainDotNet.Win32
                 }
             }
 
-            bitmap.SetResolution(PpmToDpi(_bitmapInfo.XPelsPerMeter), PpmToDpi(_bitmapInfo.YPelsPerMeter));
+            if (_bitmapInfo.XPelsPerMeter != 0) {
+                bitmap.SetResolution(PpmToDpi(_bitmapInfo.XPelsPerMeter), PpmToDpi(_bitmapInfo.YPelsPerMeter));
+            }
 
             return bitmap;
         }
