@@ -35,6 +35,7 @@ Also check out another alternative library: [NTwain](http://www.nuget.org/packag
 
 ### Brother
    * Brother DCP 7020
+   * Brother 9840 CDW
 
 ### Canon
    * Canon !CanoScan FB636U

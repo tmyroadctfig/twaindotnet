@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>bin\Debug\TwainDotNet.XML</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -67,6 +68,7 @@
     <Compile Include="TransferImageEventArgs.cs" />
     <Compile Include="TwainException.cs" />
     <Compile Include="TwainNative\AutoSize.cs" />
+    <Compile Include="TwainNative\TwainBool.cs" />
     <Compile Include="TwainNative\CapabilityArrayValue.cs" />
     <Compile Include="TwainNative\CapabilityEnumValue.cs" />
     <Compile Include="TwainNative\CapabilityOneValue.cs" />
@@ -80,9 +82,12 @@
     <Compile Include="TwainNative\Frame.cs" />
     <Compile Include="TwainNative\ImageFileFormat.cs" />
     <Compile Include="TwainNative\ImageLayout.cs" />
+    <Compile Include="TwainNative\ImageMemXfer.cs" />
+    <Compile Include="TwainNative\Memory.cs" />
     <Compile Include="TwainNative\Orientation.cs" />
     <Compile Include="TwainNative\PageType.cs" />
     <Compile Include="TwainNative\PixelType.cs" />
+    <Compile Include="TwainNative\SetupMemXfer.cs" />
     <Compile Include="TwainNative\TransferMechanism.cs" />
     <Compile Include="TwainNative\TwainCapability.cs">
       <SubType>Code</SubType>

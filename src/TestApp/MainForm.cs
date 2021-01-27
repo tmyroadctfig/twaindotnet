@@ -36,9 +36,13 @@ namespace TestApp
                     heightLabel.Text = "Height: " + pictureBox1.Image.Height;
                 }
             };
-            _twain.ScanningComplete += delegate
+            
+            _twain.ScanningComplete += delegate(object sender, ScanningCompleteEventArgs evt)
             {
-                Enabled = true;
+                if (evt.Exception != null) {
+                    MessageBox.Show("Exception during Scan: " + evt.Exception.ToString());                    
+                }
+                Enabled = true;                
             };
         }
 
