@@ -146,6 +146,23 @@ namespace TwainDotNet
             }
         }
 
+        public bool SupportsFilmScanner
+        {
+            get
+            {
+                try
+                {
+                    var cap = new Capability(Capabilities.Lightpath, TwainType.Int16, _applicationId, SourceId);
+//                    return ((Lightpath)cap.GetBasicValue().Int16Value) != Lightpath.Transmissive;
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         public void NegotiateColour(ScanSettings scanSettings)
         {
             try
@@ -196,6 +213,28 @@ namespace TwainDotNet
                 if (scanSettings.UseDuplex.HasValue && SupportsDuplex)
                 {
                     Capability.SetCapability(Capabilities.DuplexEnabled, scanSettings.UseDuplex.Value, _applicationId, SourceId);
+                }
+            }
+            catch
+            {
+                // Do nothing if the data source does not support the requested capability
+            }
+        }
+
+        public void NegotiateLightPath(ScanSettings scanSettings)
+        {
+            try
+            {
+                if (scanSettings.UseFilmScanner.HasValue && SupportsFilmScanner)
+                {
+                    if (scanSettings.UseFilmScanner.Value == true)
+                    {
+                        Capability.SetBasicCapability(Capabilities.Lightpath, (ushort)Lightpath.Transmissive, TwainType.UInt16, _applicationId, SourceId);
+                    }
+                    else
+                    {
+                        Capability.SetBasicCapability(Capabilities.Lightpath, (ushort)Lightpath.Reflective, TwainType.UInt16, _applicationId, SourceId);
+                    }
                 }
             }
             catch
@@ -310,6 +349,7 @@ namespace TwainDotNet
             NegotiateTransferCount(settings);
             NegotiateFeeder(settings);
             NegotiateDuplex(settings);
+            NegotiateLightPath(settings);
 
             if (settings.UseDocumentFeeder == true &&
                 settings.Page != null)
@@ -561,16 +601,13 @@ namespace TwainDotNet
                     Message.DisableDS,
                     userInterface);
 
-                if (result != TwainResult.Failure)
-                {
-                    result = Twain32Native.DsmIdentity(
-                        _applicationId,
-                        IntPtr.Zero,
-                        DataGroup.Control,
-                        DataArgumentType.Identity,
-                        Message.CloseDS,
-                        SourceId);
-                }
+                result = Twain32Native.DsmIdentity(
+                    _applicationId,
+                    IntPtr.Zero,
+                    DataGroup.Control,
+                    DataArgumentType.Identity,
+                    Message.CloseDS,
+                    SourceId);
             }
         }
     }
