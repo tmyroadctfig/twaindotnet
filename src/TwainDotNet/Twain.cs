@@ -39,9 +39,9 @@ namespace TwainDotNet
         /// <summary>
         /// Starts scanning.
         /// </summary>
-        public void StartScanning(ScanSettings settings)
+        public bool StartScanning(ScanSettings settings, object extTag )
         {
-            _dataSourceManager.StartScan(settings);
+           return _dataSourceManager.StartScan(settings, extTag);
         }
 
         /// <summary>
@@ -86,19 +86,9 @@ namespace TwainDotNet
         public IList<string> SourceNames
         {
             get
-            {
-                var result = new List<string>();
-                var sources = DataSource.GetAllSources(
-                    _dataSourceManager.ApplicationId,
-                    _dataSourceManager.MessageHook);
-
-                foreach (var source in sources)
-                {
-                    result.Add(source.SourceId.ProductName);
-                    source.Dispose();
-                }
-
-                return result;
+            { 
+                var sources = DataSource.GetAllSourceNames(_dataSourceManager.ApplicationId);
+                return sources;
             }
         }
     }

@@ -146,6 +146,27 @@ namespace TwainDotNet
             }
         }
 
+        public bool CheckDeviceOnline()
+        {
+            try
+            {
+                var sourceVersion = new Version(SourceId.ProtocolMajor, SourceId.ProtocolMinor);
+                var minVer = ProtocolVersions.GetMinimumVersion(Capabilities.DeviceOnline);
+                if (sourceVersion >= minVer)
+                {
+                    //var cap = new Capability(Capabilities.DeviceOnline, TwainType.Bool, _applicationId, SourceId);
+                    var cap = Capability.GetBoolCapability(Capabilities.DeviceOnline, _applicationId, SourceId);
+                    if (!cap)
+                        throw new TwainException($"{SourceId.ProductName} is offline.");
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void NegotiateColour(ScanSettings scanSettings)
         {
             try
@@ -301,6 +322,7 @@ namespace TwainDotNet
         public bool Open(ScanSettings settings)
         {
             OpenSource();
+            CheckDeviceOnline();
 
             if (settings.AbortWhenNoPaperDetectable && !PaperDetectable)
                 throw new FeederEmptyException();
@@ -464,10 +486,9 @@ namespace TwainDotNet
 
             return new DataSource(applicationId, defaultSourceId, messageHook);
         }
-
-        public static List<DataSource> GetAllSources(Identity applicationId, IWindowsMessageHook messageHook)
+        public static List<string> GetAllSourceNames(Identity applicationId)
         {
-            var sources = new List<DataSource>();
+            var sources = new List<string>();
             Identity id = new Identity();
 
             // Get the first source
@@ -489,11 +510,12 @@ namespace TwainDotNet
             }
             else
             {
-                sources.Add(new DataSource(applicationId, id, messageHook));
+                sources.Add(id.ProductName);
             }
 
             while (true)
             {
+                id = new Identity();
                 // Get the next source
                 result = Twain32Native.DsmIdentity(
                     applicationId,
@@ -512,20 +534,62 @@ namespace TwainDotNet
                     throw new TwainException("Error enumerating sources.", result);
                 }
 
-                sources.Add(new DataSource(applicationId, id, messageHook));
+                sources.Add(id.ProductName);
             }
 
             return sources;
         }
-
+         
         public static DataSource GetSource(string sourceProductName, Identity applicationId, IWindowsMessageHook messageHook)
         {
-            // A little slower than it could be, if enumerating unnecessary sources is slow. But less code duplication.
-            foreach (var source in GetAllSources(applicationId, messageHook))
+            Identity id = new Identity();
+
+            // Get the first source
+            var result = Twain32Native.DsmIdentity(
+                applicationId,
+                IntPtr.Zero,
+                DataGroup.Control,
+                DataArgumentType.Identity,
+                Message.GetFirst,
+                id);
+
+            if (result == TwainResult.EndOfList)
             {
-                if (sourceProductName.Equals(source.SourceId.ProductName, StringComparison.InvariantCultureIgnoreCase))
+                return null;
+            }
+            else if (result != TwainResult.Success)
+            {
+                throw new TwainException("Error getting first source.", result);
+            }
+            else if (id.ProductName == sourceProductName)
+            {
+                return new DataSource(applicationId, id, messageHook);
+            }
+
+            while (true)
+            {
+                id = new Identity();
+                // Get the next source
+                result = Twain32Native.DsmIdentity(
+                    applicationId,
+                    IntPtr.Zero,
+                    DataGroup.Control,
+                    DataArgumentType.Identity,
+                    Message.GetNext,
+                    id);
+
+                if (result == TwainResult.EndOfList)
                 {
-                    return source;
+                    break;
+                }
+                else if (result != TwainResult.Success)
+                {
+                    throw new TwainException("Error enumerating sources.", result);
+                }
+
+                else if (id.ProductName == sourceProductName)
+                {
+                    return new DataSource(applicationId, id, messageHook);
                 }
             }
 

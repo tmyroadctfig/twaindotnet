@@ -28,7 +28,8 @@ namespace TwainDotNet.TwainNative
         ClearPage = 0x1008,
         FeedPage = 0x1009,
         RewindPage = 0x100a,
-       
+        CustomDSData = 0xc,
+
         [Description("Controls progress indicator window during transfer and acquisition")]
         Indicators = 0x100b,
         SupportedCapsExt = 0x100c,
@@ -74,6 +75,20 @@ namespace TwainDotNet.TwainNative
         MicrEnabled = 0x1038,
         FeederPrep = 0x1039,
         Feederpocket = 0x103a,
+        SupportedCapsSegmentUnique = 0x103d,
+        SupportedDATs = 0x103e,
+        PaperHandling = 0x1043,
+        IndicatorsMode = 0x1044,
+        PrinterVerticalOffset = 0x1045,
+        PowerSaveTime = 0x1046,
+        PrinterCharRotation = 0x1047,
+        PrinterFontStyle = 0x1048,
+        PrinterIndexLeadChar = 0x1049,
+        PrinterIndexMaxValue = 0x104A,
+        PrinterIndexNumDigits = 0x104B,
+        PrinterIndexStep = 0x104C,
+        PrinterIndexTrigger = 0x104D,
+        PrinterStringPreview = 0x104E,
 
         // image data sources MAY support these capabilities
         Autobright = 0x1100,
@@ -122,6 +137,7 @@ namespace TwainDotNet.TwainNative
         Extimageinfo = 0x112f,
         Minimumheight = 0x1130,
         Minimumwidth = 0x1131,
+        AutoDiscardBlankPages = 0x1134,  /* Added 2.0 */
         Fliprotation = 0x1136,
         Barcodedetectionenabled = 0x1137,
         Supportedbarcodetypes = 0x1138,
@@ -155,9 +171,21 @@ namespace TwainDotNet.TwainNative
         AutomaticColorNonColorPixelType = 0x115a,   /* Added 2.1 */
         ColorManagementEnabled = 0x115b,            /* Added 2.1 */
         ImageMerge = 0x115c,                        /* Added 2.1 */
-        ImageMergeHeightThreshold =   0x115d,       /* Added 2.1 */
-        SupoortedExtImageInfo = 0x115e,             /* Added 2.1 */
+        ImageMergeHeightThreshold = 0x115d,       /* Added 2.1 */
+        SupportedExtImageInfo = 0x115e,             /* Added 2.1 */
+        FilmType = 0x115f,
+        Mirror = 0x1160,
+        JpegSubsampling = 0x1161,
         Audiofileformat = 0x1201,
-        Xfermech = 0x1202
+        
+        AutomaticSenseMedium = 0x103b,   /* Added 2.1 */
+        CustomInterfaceGuid = 0x103c,   /* Added 2.1 */
+        DoubleFeedDetection = 0x103f,
+        DoubleFeedDetectionLength = 0x1040,
+        DoubleFeedDetectionSensitivity = 0x1041,
+        DoubleFeedDetectionResponse = 0x1042,
+
+        /* image data sources MAY support these audio caps */
+        AXferMech = 0x1202,  /* Added 1.8 */
     }
 }
